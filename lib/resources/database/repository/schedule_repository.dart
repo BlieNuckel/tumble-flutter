@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tumble/resources/database/db/hive_methods.dart';
-import '../../../models/schedule.dart';
+import '../../../models/scheduleList/schedule.dart';
 
 class ScheduleRepository {
   static var dbObject;

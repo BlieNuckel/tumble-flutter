@@ -1,4 +1,4 @@
-import '../../../models/schedule.dart';
+import '../../../models/scheduleList/schedule.dart';
 
 abstract class ScheduleInterface {
   init();

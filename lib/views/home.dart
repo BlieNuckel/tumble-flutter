@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tumble/models/scheduleAPI.dart';
 import 'package:tumble/views/widgets/schedulecard.dart';
 
-import '../models/schedule.dart';
+import '../models/scheduleList/schedule.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,7 +12,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _MainPageState extends State<HomePage> {
-  late List<Schedule> _schedules;
+  late List<Object>
+      _schedules; // Variable that contains a list of DayDivider and Schedule objects
   bool _isLoading = true;
 
   @override
@@ -23,12 +24,17 @@ class _MainPageState extends State<HomePage> {
   }
 
   Future<void> getSchedules() async {
-    _schedules = await ScheduleApi.getSchedule();
+    // .getSchedule returns a list of DayDivider and Schedule objects
+    _schedules = await ScheduleApi.getSchedule("p.TBSE2+2021+35+100+NML+en");
     setState(() {
       _isLoading = false;
     });
 
-    print(_schedules);
+    _schedules.forEach((element) {
+      if (element is Schedule) {
+        print(element.start);
+      }
+    });
   }
 
   @override
