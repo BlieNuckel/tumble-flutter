@@ -5,7 +5,7 @@ class ScheduleCard extends StatelessWidget {
   final String course;
   final String lecturer;
   final String location;
-  final Color color;
+  final String color;
   ScheduleCard({
     required this.title,
     required this.course,
@@ -13,10 +13,11 @@ class ScheduleCard extends StatelessWidget {
     required this.location,
     required this.color,
   });
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
       width: MediaQuery.of(context).size.width,
       height: 180,
       decoration: BoxDecoration(

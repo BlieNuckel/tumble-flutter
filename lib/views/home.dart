@@ -12,15 +12,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _MainPageState extends State<HomePage> {
-  late List<Object>
-      _schedules; // Variable that contains a list of DayDivider and Schedule objects
+  // Variable that contains a list of DayDivider and Schedule objects
+  late List<Object> _schedules;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-
-    getSchedules();
   }
 
   Future<void> getSchedules() async {
@@ -28,12 +26,6 @@ class _MainPageState extends State<HomePage> {
     _schedules = await ScheduleApi.getSchedule("p.TBSE2+2021+35+100+NML+en");
     setState(() {
       _isLoading = false;
-    });
-
-    _schedules.forEach((element) {
-      if (element is Schedule) {
-        print(element.start);
-      }
     });
   }
 
@@ -45,12 +37,31 @@ class _MainPageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [Text('Tumble')],
       )),
-      body: ScheduleCard(
-        color: Color(0xFFFFFF),
-        title: "Class",
-        course: "Programming",
-        lecturer: "Someone",
-        location: "Somewhere",
+      body: FutureBuilder(
+        future: getSchedules(),
+        builder: (context, snapshot) {
+          return ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: _schedules.length,
+            itemBuilder: (context, index) {
+              final scheduleVar = _schedules[index];
+              if (scheduleVar is Schedule) {
+                return ScheduleCard(
+                    title: scheduleVar.title,
+                    course: scheduleVar.course,
+                    lecturer: scheduleVar.lecturer,
+                    location: scheduleVar.location,
+                    color: scheduleVar.color);
+              }
+              return ScheduleCard(
+                  title: "empty",
+                  course: "empty",
+                  lecturer: "empty",
+                  location: "empty",
+                  color: "empty");
+            },
+          );
+        },
       ),
     );
   }
