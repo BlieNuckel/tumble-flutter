@@ -12,11 +12,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Tumble',
       theme: ThemeData(
+          fontFamily: 'Roboto',
           primarySwatch: Colors.blue,
           primaryColor: Colors.white,
           textTheme:
               const TextTheme(bodyText2: TextStyle(color: Colors.white))),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
