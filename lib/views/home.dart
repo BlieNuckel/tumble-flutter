@@ -21,12 +21,13 @@ class _MainPageState extends State<HomePage> {
     super.initState();
   }
 
-  Future<void> getSchedules() async {
+  Future<List<Object>> getSchedules() async {
     // .getSchedule returns a list of DayDivider and Schedule objects
-    _schedules = await ScheduleApi.getSchedule("p.TBSE2+2021+35+100+NML+en");
     setState(() {
       _isLoading = false;
     });
+    _schedules = await ScheduleApi.getSchedule("p.TBSE2+2021+35+100+NML+en");
+    return _schedules;
   }
 
   @override
@@ -40,27 +41,31 @@ class _MainPageState extends State<HomePage> {
       body: FutureBuilder(
         future: getSchedules(),
         builder: (context, snapshot) {
-          return ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: _schedules.length,
-            itemBuilder: (context, index) {
-              final scheduleVar = _schedules[index];
-              if (scheduleVar is Schedule) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: _schedules.length,
+              itemBuilder: (context, index) {
+                final scheduleVar = _schedules[index];
+                if (scheduleVar is Schedule) {
+                  return ScheduleCard(
+                      title: scheduleVar.title,
+                      course: scheduleVar.course,
+                      lecturer: scheduleVar.lecturer,
+                      location: scheduleVar.location,
+                      color: scheduleVar.color);
+                }
                 return ScheduleCard(
-                    title: scheduleVar.title,
-                    course: scheduleVar.course,
-                    lecturer: scheduleVar.lecturer,
-                    location: scheduleVar.location,
-                    color: scheduleVar.color);
-              }
-              return ScheduleCard(
-                  title: "empty",
-                  course: "empty",
-                  lecturer: "empty",
-                  location: "empty",
-                  color: "empty");
-            },
-          );
+                    title: "empty",
+                    course: "empty",
+                    lecturer: "empty",
+                    location: "empty",
+                    color: "empty");
+              },
+            );
+          }
+
+          return Container();
         },
       ),
     );
