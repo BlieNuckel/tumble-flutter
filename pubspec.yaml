@@ -38,7 +38,7 @@ dependencies:
 
   hive: 1.4.1+1
 
-  intl: 0.16.1
+  intl: 0.17.0-nullsafety.2
 
 dev_dependencies:
   flutter_test:
@@ -56,38 +56,42 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+
+  assets:
+    - assets/cardBanner.png
+
   fonts:
-        - family: Roboto
-          fonts:
-            - asset: design/fonts/roboto_black_italic.ttf
-              weight: 900
-              style: italic
-            - asset: design/fonts/roboto_black.ttf
-              weight: 900
-            - asset: design/fonts/roboto_bold_italic.ttf
-              weight: 700
-              style: italic
-            - asset: design/fonts/roboto_bold.ttf
-              weight: 700
-            - asset: design/fonts/roboto_light_italic.ttf
-              weight: 300
-              style: italic
-            - asset: design/fonts/roboto_light.ttf
-              weight: 300
-            - asset: design/fonts/roboto_medium_italic.ttf
-              weight: 500
-              style: italic
-            - asset: design/fonts/roboto_medium.ttf
-              weight: 500
-            - asset: design/fonts/roboto_regular.ttf
-              weight: 400
-            - asset: design/fonts/roboto_thin_italic.ttf
-              weight: 100
-              style: italic
-            - asset: design/fonts/roboto_thin.ttf
-              weight: 100
-            - asset: design/fonts/roboto.ttf
-              weight: 400
-              style: italic
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/roboto_black_italic.ttf
+          weight: 900
+          style: italic
+        - asset: assets/fonts/roboto_black.ttf
+          weight: 900
+        - asset: assets/fonts/roboto_bold_italic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/roboto_bold.ttf
+          weight: 700
+        - asset: assets/fonts/roboto_light_italic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/roboto_light.ttf
+          weight: 300
+        - asset: assets/fonts/roboto_medium_italic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/roboto_medium.ttf
+          weight: 500
+        - asset: assets/fonts/roboto_regular.ttf
+          weight: 400
+        - asset: assets/fonts/roboto_thin_italic.ttf
+          weight: 100
+          style: italic
+        - asset: assets/fonts/roboto_thin.ttf
+          weight: 100
+        - asset: assets/fonts/roboto.ttf
+          weight: 400
+          style: italic
 
   uses-material-design: true

@@ -14,7 +14,7 @@ class ScheduleApi {
     List temp = [];
 
     if (response.statusCode == 200) {
-      Map data = jsonDecode(response.body);
+      Map data = jsonDecode(utf8.decode(response.bodyBytes));
 
       Map years = data["schedule"]; // Strips the outer "schedule" map
 
@@ -45,5 +45,18 @@ class ScheduleApi {
       }
       return Schedule.fromJson(data);
     }).toList();
+  }
+
+  static isExamCard(String cardTitle) {
+    return cardTitle.toLowerCase().contains("exam") || cardTitle.toLowerCase().contains("tenta");
+  }
+
+  static bool isFavorite() {
+    // We can store a state somewhere that we can hopefully just update as the "current schedule" which we can then check against the saved favorite
+    return false;
+  }
+
+  static bool isStarred() {
+    return false;
   }
 }

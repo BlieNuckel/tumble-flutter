@@ -1,0 +1,98 @@
+import 'package:flutter/material.dart';
+import 'package:tumble/models/scheduleAPI.dart';
+
+class CustomTopBar extends StatefulWidget {
+  const CustomTopBar({Key? key}) : super(key: key);
+
+  @override
+  State<CustomTopBar> createState() => CustomTopBarState();
+}
+
+class CustomTopBarState extends State<CustomTopBar> {
+  bool _visible = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+        opacity: _visible ? 1 : 0,
+        duration: const Duration(milliseconds: 150),
+        child: Container(
+            height: MediaQuery.of(context).viewPadding.top + 50,
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+            alignment: Alignment.bottomLeft,
+            color: Colors.transparent,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: const [FavoriteButton()],
+                ),
+                Row(
+                  children: [
+                    Material(
+                        color: Colors.transparent,
+                        child: IconButton(
+                            icon: const Icon(Icons.search),
+                            iconSize: 32,
+                            onPressed: () {
+                              //! Add schedule as favorite here
+                            },
+                            splashRadius: 20,
+                            enableFeedback: true,
+                            color: Theme.of(context).colorScheme.onBackground)),
+                    Material(
+                        color: Colors.transparent,
+                        child: IconButton(
+                            icon: const Icon(Icons.settings_outlined),
+                            iconSize: 32,
+                            onPressed: () {
+                              //! Add schedule as favorite here
+                            },
+                            splashRadius: 20,
+                            enableFeedback: true,
+                            color: Theme.of(context).colorScheme.onBackground)),
+                  ],
+                )
+              ],
+            )));
+  }
+
+  updateVisibility(double scrollPixels) {
+    setState(() {
+      if (scrollPixels > 35) {
+        _visible = false;
+      } else {
+        _visible = true;
+      }
+    });
+  }
+}
+
+class FavoriteButton extends StatefulWidget {
+  const FavoriteButton({Key? key}) : super(key: key);
+
+  @override
+  State<FavoriteButton> createState() => _FavoriteButtonState();
+}
+
+class _FavoriteButtonState extends State<FavoriteButton> {
+  bool _favorited = ScheduleApi.isFavorite();
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+        color: Colors.transparent,
+        child: IconButton(
+            icon: _favorited ? const Icon(Icons.favorite) : const Icon(Icons.favorite_outline),
+            iconSize: 30,
+            onPressed: () {
+              //! Add schedule as favorite here
+              setState(() {
+                _favorited = !_favorited;
+              });
+            },
+            splashRadius: 20,
+            enableFeedback: true,
+            color: _favorited ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onBackground));
+  }
+}

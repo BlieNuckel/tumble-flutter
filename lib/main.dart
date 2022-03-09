@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tumble/views/home.dart';
+import 'package:tumble/theme/colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,11 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Tumble',
       theme: ThemeData(
-          fontFamily: 'Roboto',
-          primarySwatch: Colors.blue,
-          primaryColor: Colors.white,
-          textTheme:
-              const TextTheme(bodyText2: TextStyle(color: Colors.white))),
+        colorScheme: CustomColors.lightColors,
+        fontFamily: 'Roboto',
+      ),
       home: const HomePage(),
     );
   }
