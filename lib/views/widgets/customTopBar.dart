@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tumble/models/scheduleAPI.dart';
 
 class CustomTopBar extends StatefulWidget {
-  const CustomTopBar({Key? key}) : super(key: key);
+  final String currentScheduleId;
+
+  const CustomTopBar({Key? key, required this.currentScheduleId}) : super(key: key);
 
   @override
   State<CustomTopBar> createState() => CustomTopBarState();
@@ -25,7 +27,11 @@ class CustomTopBarState extends State<CustomTopBar> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
-                  children: const [FavoriteButton()],
+                  children: [
+                    FavoriteButton(
+                      currentScheduleId: widget.currentScheduleId,
+                    )
+                  ],
                 ),
                 Row(
                   children: [
@@ -39,18 +45,7 @@ class CustomTopBarState extends State<CustomTopBar> {
                             },
                             splashRadius: 20,
                             enableFeedback: true,
-                            color: Theme.of(context).colorScheme.onBackground)),
-                    Material(
-                        color: Colors.transparent,
-                        child: IconButton(
-                            icon: const Icon(Icons.settings_outlined),
-                            iconSize: 32,
-                            onPressed: () {
-                              //! Add schedule as favorite here
-                            },
-                            splashRadius: 20,
-                            enableFeedback: true,
-                            color: Theme.of(context).colorScheme.onBackground)),
+                            color: Theme.of(context).colorScheme.onBackground))
                   ],
                 )
               ],
@@ -69,26 +64,36 @@ class CustomTopBarState extends State<CustomTopBar> {
 }
 
 class FavoriteButton extends StatefulWidget {
-  const FavoriteButton({Key? key}) : super(key: key);
+  final String currentScheduleId;
+
+  const FavoriteButton({Key? key, required this.currentScheduleId}) : super(key: key);
 
   @override
   State<FavoriteButton> createState() => _FavoriteButtonState();
 }
 
 class _FavoriteButtonState extends State<FavoriteButton> {
-  bool _favorited = ScheduleApi.isFavorite();
+  late bool _favorited;
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      _favorited = ScheduleApi.isFavorite(widget.currentScheduleId);
+    });
     return Material(
         color: Colors.transparent,
         child: IconButton(
             icon: _favorited ? const Icon(Icons.favorite) : const Icon(Icons.favorite_outline),
             iconSize: 30,
             onPressed: () {
-              //! Add schedule as favorite here
+              if (ScheduleApi.isFavorite(widget.currentScheduleId)) {
+                ScheduleApi.setFavorite('');
+              } else {
+                ScheduleApi.setFavorite(widget.currentScheduleId);
+              }
+
               setState(() {
-                _favorited = !_favorited;
+                _favorited = ScheduleApi.isFavorite(widget.currentScheduleId);
               });
             },
             splashRadius: 20,

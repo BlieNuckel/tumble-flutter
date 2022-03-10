@@ -2,8 +2,12 @@ import 'dart:convert';
 import 'package:tumble/models/scheduleList/schedule.dart';
 import 'package:tumble/models/scheduleList/dayDivider.dart';
 import 'package:tumble/providers/backendProvider.dart';
+import 'package:tumble/providers/localStorage.dart';
+import 'package:tumble/service_locator.dart';
 
 class ScheduleApi {
+  static final localStorageService = locator<LocalStorageService>();
+
   /// Returns a [List] that corresponds to the given [scheduleId].
   ///
   /// Actual return type is [List<Object>], but all items are instances
@@ -51,12 +55,20 @@ class ScheduleApi {
     return cardTitle.toLowerCase().contains("exam") || cardTitle.toLowerCase().contains("tenta");
   }
 
-  static bool isFavorite() {
+  static bool isFavorite(String scheduleId) {
     // We can store a state somewhere that we can hopefully just update as the "current schedule" which we can then check against the saved favorite
-    return false;
+    return localStorageService.getScheduleFavorite() == scheduleId;
   }
 
   static bool isStarred() {
     return false;
+  }
+
+  static hasFavorite() {
+    return localStorageService.getScheduleFavorite() != "" && localStorageService.getScheduleFavorite() != "null";
+  }
+
+  static setFavorite(String scheduleId) {
+    localStorageService.setScheduleFavorite(scheduleId);
   }
 }

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:tumble/models/scheduleAPI.dart';
+import 'package:tumble/providers/localStorage.dart';
+import 'package:tumble/service_locator.dart';
 import 'package:tumble/views/home.dart';
 import 'package:tumble/theme/colors.dart';
+import 'package:tumble/views/search.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  setup().then((value) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -17,7 +22,11 @@ class MyApp extends StatelessWidget {
         colorScheme: CustomColors.lightColors,
         fontFamily: 'Roboto',
       ),
-      home: const HomePage(),
+      home: ScheduleApi.hasFavorite()
+          ? HomePage(
+              currentScheduleId: locator<LocalStorageService>().getScheduleFavorite(),
+            )
+          : ScheduleSearchPage(),
     );
   }
 }

@@ -169,7 +169,7 @@ class ScheduleCard extends StatelessWidget {
                 child: Image(
                     width: 50,
                     height: 50,
-                    image: const AssetImage("assets/cardBanner.png"),
+                    image: const AssetImage("assets/images/cardBanner.png"),
                     color: Color(int.parse("ff" + color.replaceAll("#", ""), radix: 16))))
           ],
         ));
