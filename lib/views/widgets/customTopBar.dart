@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tumble/models/scheduleAPI.dart';
+import 'package:tumble/providers/scheduleAPI.dart';
+import 'package:tumble/views/search.dart';
 
 class CustomTopBar extends StatefulWidget {
   final String currentScheduleId;
@@ -41,8 +42,18 @@ class CustomTopBarState extends State<CustomTopBar> {
                             icon: const Icon(Icons.search),
                             iconSize: 32,
                             onPressed: () {
-                              //! Add schedule as favorite here
+                              Navigator.push(
+                                  context, MaterialPageRoute(builder: (context) => const ScheduleSearchPage()));
                             },
+                            splashRadius: 20,
+                            enableFeedback: true,
+                            color: Theme.of(context).colorScheme.onBackground)),
+                    Material(
+                        color: Colors.transparent,
+                        child: IconButton(
+                            icon: const Icon(Icons.settings_outlined),
+                            iconSize: 32,
+                            onPressed: () {},
                             splashRadius: 20,
                             enableFeedback: true,
                             color: Theme.of(context).colorScheme.onBackground))

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tumble/models/scheduleAPI.dart';
-import 'package:tumble/models/scheduleList/dayDivider.dart';
+import 'package:tumble/providers/scheduleAPI.dart';
+import 'package:tumble/models/dayDivider.dart';
 import 'package:tumble/views/widgets/customTopBar.dart';
 import 'package:tumble/views/widgets/daydivider.dart';
 import 'package:tumble/views/widgets/schedulecard.dart';
 
-import '../models/scheduleList/schedule.dart';
+import '../models/schedule.dart';
 
 class HomePage extends StatefulWidget {
   final String currentScheduleId;

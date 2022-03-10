@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:tumble/models/scheduleAPI.dart';
+import 'package:tumble/providers/scheduleAPI.dart';
 
 class ScheduleCard extends StatelessWidget {
   final String title;

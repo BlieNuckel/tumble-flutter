@@ -1,7 +1,7 @@
-import 'package:tumble/models/scheduleList/schedule.dart';
+import 'package:tumble/models/schedule.dart';
 import 'package:tumble/resources/database/interface/schedule_interface.dart';
 
-import '../../../models/scheduleList/schedule.dart';
+import '../../../models/schedule.dart';
 
 class HiveMethods implements ScheduleInterface {
   @override

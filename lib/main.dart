@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:tumble/models/scheduleAPI.dart';
+import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/providers/localStorage.dart';
 import 'package:tumble/service_locator.dart';
 import 'package:tumble/views/home.dart';
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
           ? HomePage(
               currentScheduleId: locator<LocalStorageService>().getScheduleFavorite(),
             )
-          : ScheduleSearchPage(),
+          : const ScheduleSearchPage(),
     );
   }
 }

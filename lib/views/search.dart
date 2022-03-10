@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tumble/models/programme.dart';
+import 'package:tumble/providers/programSearchAPI.dart';
+import 'package:tumble/views/home.dart';
+import 'package:tumble/views/widgets/programCard.dart';
 import 'package:tumble/views/widgets/scheduleSearchBar.dart';
+import 'package:tumble/views/widgets/slideableLogo.dart';
 
 class ScheduleSearchPage extends StatefulWidget {
   const ScheduleSearchPage({Key? key}) : super(key: key);
@@ -9,14 +14,22 @@ class ScheduleSearchPage extends StatefulWidget {
 }
 
 class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
-  final GlobalKey<_SlideableLogoImageState> _key = GlobalKey();
+  final GlobalKey<SlideableLogoImageState> _key = GlobalKey();
 
-  FocusNode _focus = FocusNode();
+  final FocusNode _focus = FocusNode();
+  List<Program> _programList = [];
 
   @override
   void initState() {
     super.initState();
     _focus.addListener(() => {_key.currentState!.focusChanged()});
+  }
+
+  void loadScheduleCB(String searchQuery) async {
+    List<Program> programsTemp = await ProgramSearchAPI.getProgramList(searchQuery);
+    setState(() {
+      _programList = programsTemp;
+    });
   }
 
   @override
@@ -26,49 +39,65 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
         margin: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 30),
-        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
         alignment: Alignment.center,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SlideableLogoImage(
-              key: _key,
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+              child: SlideableLogoImage(
+                key: _key,
+              ),
             ),
-            ScheduleSearchBar(focus: _focus),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+              margin: const EdgeInsets.only(bottom: 10),
+              child: ScheduleSearchBar(
+                focus: _focus,
+                loadSchedulesCB: loadScheduleCB,
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: _programList.length,
+                itemBuilder: ((context, index) {
+                  final program = _programList[index];
+                  if (index != _programList.length - 1) {
+                    return Column(
+                      children: [
+                        ProgramCard(
+                            programName: program.programName,
+                            programId: program.programId,
+                            onPush: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomePage(currentScheduleId: program.programId)));
+                            }),
+                        Divider(
+                          indent: 20,
+                          endIndent: 20,
+                          height: 0,
+                          thickness: 1,
+                          color: Theme.of(context).colorScheme.secondary,
+                        )
+                      ],
+                    );
+                  }
+                  return ProgramCard(
+                      programName: program.programName,
+                      programId: program.programId,
+                      onPush: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => HomePage(currentScheduleId: program.programId)));
+                      });
+                }),
+              ),
+            )
           ],
         ),
       ),
     );
-  }
-}
-
-class SlideableLogoImage extends StatefulWidget {
-  const SlideableLogoImage({Key? key}) : super(key: key);
-
-  @override
-  State<SlideableLogoImage> createState() => _SlideableLogoImageState();
-}
-
-class _SlideableLogoImageState extends State<SlideableLogoImage> {
-  bool _visible = true;
-
-  focusChanged() {
-    setState(() {
-      _visible = !_visible;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedSize(
-        duration: const Duration(milliseconds: 200),
-        child: AnimatedOpacity(
-          opacity: _visible ? 1 : 0,
-          duration: const Duration(milliseconds: 150),
-          child: SizedOverflowBox(
-            size: Size(double.infinity, (_visible ? 300 : 0)),
-            child: const Image(height: 250, image: AssetImage("assets/images/tumbleAppLogo.png")),
-          ),
-        ));
   }
 }

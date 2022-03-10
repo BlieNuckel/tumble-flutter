@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:tumble/models/scheduleList/schedule.dart';
-import 'package:tumble/models/scheduleList/dayDivider.dart';
+import 'package:tumble/models/schedule.dart';
+import 'package:tumble/models/dayDivider.dart';
 import 'package:tumble/providers/backendProvider.dart';
 import 'package:tumble/providers/localStorage.dart';
 import 'package:tumble/service_locator.dart';

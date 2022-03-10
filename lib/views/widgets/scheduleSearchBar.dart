@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class ScheduleSearchBar extends StatefulWidget {
   final focus;
+  final Function(String) loadSchedulesCB;
 
-  const ScheduleSearchBar({Key? key, required this.focus}) : super(key: key);
+  const ScheduleSearchBar({Key? key, required this.focus, required this.loadSchedulesCB}) : super(key: key);
 
   @override
   State<ScheduleSearchBar> createState() => _ScheduleSearchBarState();
@@ -54,7 +55,8 @@ class _ScheduleSearchBarState extends State<ScheduleSearchBar> {
                           color: Theme.of(context).colorScheme.onSurface,
                           onPressed: () => {_textFieldController.text = ""},
                           icon: const Icon(Icons.close),
-                          splashRadius: 15,
+                          iconSize: 20,
+                          splashRadius: 12,
                         ))),
               )),
         )),
@@ -63,9 +65,23 @@ class _ScheduleSearchBarState extends State<ScheduleSearchBar> {
           width: 50,
           margin: const EdgeInsets.only(left: 20),
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: const <BoxShadow>[BoxShadow(color: Colors.black26, blurRadius: 3, offset: Offset(0, 2))]),
+            color: Theme.of(context).colorScheme.primary,
+            borderRadius: BorderRadius.circular(5),
+            boxShadow: const <BoxShadow>[BoxShadow(color: Colors.black26, blurRadius: 3, offset: Offset(0, 2))],
+          ),
+          child: MaterialButton(
+            onPressed: () {
+              if (!_textInField) return;
+
+              widget.loadSchedulesCB(_textFieldController.value.text);
+            },
+            visualDensity: VisualDensity.compact,
+            splashColor: Colors.white.withOpacity(0.4),
+            child: Icon(
+              Icons.search,
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
         ),
       ],
     );
