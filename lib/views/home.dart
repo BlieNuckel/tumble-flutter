@@ -4,6 +4,7 @@ import 'package:tumble/models/dayDivider.dart';
 import 'package:tumble/views/widgets/customTopBar.dart';
 import 'package:tumble/views/widgets/daydivider.dart';
 import 'package:tumble/views/widgets/schedulecard.dart';
+import 'package:tumble/views/widgets/toTopBtn.dart';
 
 import '../models/schedule.dart';
 
@@ -17,17 +18,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _MainPageState extends State<HomePage> {
-  final GlobalKey<CustomTopBarState> _key = GlobalKey();
+  final GlobalKey<CustomTopBarState> _keyTopBar = GlobalKey();
+  final GlobalKey<ToTopButtonState> _keyToTopBtn = GlobalKey();
 
   // Variable that contains a list of DayDivider and Schedule objects
   late List<Object> _schedules;
   final ScrollController _scrollController = ScrollController(initialScrollOffset: 0, keepScrollOffset: true);
   bool _isLoading = true;
 
+  void scrollToTopCB() {
+    _scrollController.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.linearToEaseOut);
+  }
+
   @override
   void initState() {
     _scrollController.addListener(() {
-      _key.currentState!.updateVisibility(_scrollController.position.pixels);
+      _keyTopBar.currentState!.updateVisibility(_scrollController.position.pixels);
+      _keyToTopBtn.currentState!.updateVisibility(_scrollController.position.pixels);
     });
 
     super.initState();
@@ -79,8 +86,12 @@ class _MainPageState extends State<HomePage> {
               return Container();
             },
           ),
+          ToTopButton(
+            key: _keyToTopBtn,
+            scrollToTopCB: scrollToTopCB,
+          ),
           CustomTopBar(
-            key: _key,
+            key: _keyTopBar,
             currentScheduleId: widget.currentScheduleId,
           )
         ]));

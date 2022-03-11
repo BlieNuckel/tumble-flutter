@@ -12,7 +12,6 @@ class LocalStorageService {
   }
 
   String getScheduleFavorite() {
-    print(_preferences.get("schedule_id").toString());
     return _preferences.get("schedule_id").toString();
   }
 }
