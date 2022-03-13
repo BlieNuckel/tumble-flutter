@@ -13,15 +13,18 @@ class ScheduleCard extends StatelessWidget {
   final String color;
   final DateTime start;
   final DateTime end;
+  final Function onPress;
 
-  ScheduleCard(
-      {required this.title,
-      required this.course,
-      required this.lecturer,
-      required this.location,
-      required this.color,
-      required this.start,
-      required this.end});
+  ScheduleCard({
+    required this.title,
+    required this.course,
+    required this.lecturer,
+    required this.location,
+    required this.color,
+    required this.start,
+    required this.end,
+    required this.onPress,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,76 +43,84 @@ class ScheduleCard extends StatelessWidget {
         child: Stack(
           children: [
             Container(
-                height: 150,
-                width: double.infinity,
-                padding: const EdgeInsets.only(left: 10, top: 15),
-                margin: const EdgeInsets.only(top: 9, left: 20, right: 20),
-                decoration: () {
-                  if (!_isExamCard) {
-                    return BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 1, offset: Offset(0, 1))]);
-                  } else {
-                    return BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 1, offset: Offset(0, 1))]);
-                  }
-                }(),
-                child: FractionallySizedBox(
-                    widthFactor: 0.85,
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        () {
-                          if (title.length >= 50) {
-                            return Text(title.substring(0, 46) + '...',
-                                style: TextStyle(
-                                  color: _mainCardTextColor,
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.w400,
-                                ));
-                          } else {
-                            return Text(
-                              title,
-                              style: TextStyle(
-                                color: _mainCardTextColor,
-                                fontSize: 19,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            );
-                          }
-                        }(),
-                        Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: () {
-                              if (course.length >= 60) {
-                                return Text(course.substring(0, 56) + '...',
+              height: 150,
+              width: double.infinity,
+              margin: const EdgeInsets.only(top: 9, left: 20, right: 20),
+              alignment: Alignment.topLeft,
+              decoration: () {
+                if (!_isExamCard) {
+                  return BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(5),
+                      boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 1, offset: Offset(0, 1))]);
+                } else {
+                  return BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(5),
+                      boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 1, offset: Offset(0, 1))]);
+                }
+              }(),
+              child: MaterialButton(
+                padding: const EdgeInsets.all(0),
+                onPressed: () => onPress(),
+                child: Container(
+                    padding: const EdgeInsets.only(left: 10, top: 15),
+                    width: double.infinity,
+                    child: FractionallySizedBox(
+                        widthFactor: 0.85,
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            () {
+                              if (title.length >= 50) {
+                                return Text(title.substring(0, 46) + '...',
                                     style: TextStyle(
                                       color: _mainCardTextColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w300,
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w400,
                                     ));
                               } else {
-                                return Text(course,
-                                    style: TextStyle(
-                                      color: _mainCardTextColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w300,
-                                    ));
+                                return Text(
+                                  title,
+                                  style: TextStyle(
+                                    color: _mainCardTextColor,
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                );
                               }
-                            }()),
-                        Expanded(
-                            child: Container(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                alignment: Alignment.bottomLeft,
-                                child: Text(location,
-                                    style: TextStyle(
-                                        color: _mainCardTextColor, fontSize: 21, fontWeight: FontWeight.w100))))
-                      ],
-                    ))),
+                            }(),
+                            Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: () {
+                                  if (course.length >= 60) {
+                                    return Text(course.substring(0, 56) + '...',
+                                        style: TextStyle(
+                                          color: _mainCardTextColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w300,
+                                        ));
+                                  } else {
+                                    return Text(course,
+                                        style: TextStyle(
+                                          color: _mainCardTextColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w300,
+                                        ));
+                                  }
+                                }()),
+                            Expanded(
+                                child: Container(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    alignment: Alignment.bottomLeft,
+                                    child: Text(location,
+                                        style: TextStyle(
+                                            color: _mainCardTextColor, fontSize: 21, fontWeight: FontWeight.w100))))
+                          ],
+                        ))),
+              ),
+            ),
             Container(
               alignment: Alignment.center,
               width: 50,

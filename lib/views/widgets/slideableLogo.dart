@@ -12,7 +12,7 @@ class SlideableLogoImageState extends State<SlideableLogoImage> {
 
   focusChanged() {
     setState(() {
-      _visible = !_visible;
+      _visible = false;
     });
   }
 

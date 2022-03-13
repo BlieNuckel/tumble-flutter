@@ -43,6 +43,12 @@ dependencies:
 
   intl: 0.17.0-nullsafety.2
 
+  fluttertoast: ^8.0.9
+
+  flutter_spinkit: ^5.1.0
+
+  date_util: ^0.1.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -63,6 +69,7 @@ flutter:
   assets:
     - assets/images/cardBanner.png
     - assets/images/tumbleAppLogo.png
+    - assets/images/detailsSplitter.png
 
   fonts:
     - family: Roboto

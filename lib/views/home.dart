@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tumble/providers/scheduleAPI.dart';
-import 'package:tumble/models/dayDivider.dart';
-import 'package:tumble/views/widgets/customTopBar.dart';
-import 'package:tumble/views/widgets/daydivider.dart';
-import 'package:tumble/views/widgets/schedulecard.dart';
-import 'package:tumble/views/widgets/toTopBtn.dart';
-
-import '../models/schedule.dart';
+import 'package:tumble/views/schedulePage.dart';
+import 'package:tumble/views/weekPage.dart';
 
 class HomePage extends StatefulWidget {
   final String currentScheduleId;
@@ -18,82 +12,50 @@ class HomePage extends StatefulWidget {
 }
 
 class _MainPageState extends State<HomePage> {
-  final GlobalKey<CustomTopBarState> _keyTopBar = GlobalKey();
-  final GlobalKey<ToTopButtonState> _keyToTopBtn = GlobalKey();
+  late List<Widget> _pages;
+  late Widget _schedulePage;
+  late Widget _weekPage;
 
-  // Variable that contains a list of DayDivider and Schedule objects
-  late List<Object> _schedules;
-  final ScrollController _scrollController = ScrollController(initialScrollOffset: 0, keepScrollOffset: true);
-  bool _isLoading = true;
-
-  void scrollToTopCB() {
-    _scrollController.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.linearToEaseOut);
-  }
+  late int _currentIndex;
+  late Widget _currentPage;
 
   @override
   void initState() {
-    _scrollController.addListener(() {
-      _keyTopBar.currentState!.updateVisibility(_scrollController.position.pixels);
-      _keyToTopBtn.currentState!.updateVisibility(_scrollController.position.pixels);
-    });
+    _schedulePage = SchedulePage(
+      currentScheduleId: widget.currentScheduleId,
+    );
+    _weekPage = WeekPage(currentScheduleId: widget.currentScheduleId);
+
+    _pages = [_schedulePage, _weekPage];
+    _currentIndex = 0;
+    _currentPage = _schedulePage;
 
     super.initState();
   }
 
-  Future<List<Object>> getSchedules() async {
-    // .getSchedule returns a list of DayDivider and Schedule objects
+  void changePage(int index) {
     setState(() {
-      _isLoading = false;
+      _currentIndex = index;
+      _currentPage = _pages[index];
     });
-    _schedules = await ScheduleApi.getSchedule(widget.currentScheduleId);
-    return _schedules;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: _currentPage,
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (index) => changePage(index),
+        currentIndex: _currentIndex,
         backgroundColor: Theme.of(context).colorScheme.background,
-        body: Stack(children: [
-          FutureBuilder(
-            future: getSchedules(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return ListView.builder(
-                  controller: _scrollController,
-                  scrollDirection: Axis.vertical,
-                  itemCount: _schedules.length,
-                  itemBuilder: (context, index) {
-                    final scheduleVar = _schedules[index];
-                    if (scheduleVar is Schedule) {
-                      return ScheduleCard(
-                          title: scheduleVar.title,
-                          course: scheduleVar.course,
-                          lecturer: scheduleVar.lecturer,
-                          location: scheduleVar.location,
-                          color: scheduleVar.color,
-                          start: scheduleVar.start,
-                          end: scheduleVar.end);
-                    } else if (scheduleVar is DayDivider) {
-                      return DayDividerWidget(
-                          dayName: scheduleVar.dayName, date: scheduleVar.date, firstDayDivider: index == 0);
-                    } else {
-                      return Container();
-                    }
-                  },
-                );
-              }
-              return Container();
-            },
-          ),
-          ToTopButton(
-            key: _keyToTopBtn,
-            scrollToTopCB: scrollToTopCB,
-          ),
-          CustomTopBar(
-            key: _keyTopBar,
-            currentScheduleId: widget.currentScheduleId,
-          )
-        ]));
+        elevation: 40,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_view_day_rounded), label: "Schedule"),
+          BottomNavigationBarItem(icon: Icon(Icons.view_week_rounded), label: "Week"),
+        ],
+      ),
+    );
   }
 }

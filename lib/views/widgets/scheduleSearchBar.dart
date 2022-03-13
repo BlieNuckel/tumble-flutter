@@ -40,6 +40,12 @@ class _ScheduleSearchBarState extends State<ScheduleSearchBar> {
           child: TextField(
               focusNode: widget.focus,
               controller: _textFieldController,
+              textInputAction: TextInputAction.search,
+              onSubmitted: (value) {
+                if (!_textInField) return;
+
+                widget.loadSchedulesCB(_textFieldController.value.text);
+              },
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
                 border: InputBorder.none,
@@ -74,6 +80,7 @@ class _ScheduleSearchBarState extends State<ScheduleSearchBar> {
               if (!_textInField) return;
 
               widget.loadSchedulesCB(_textFieldController.value.text);
+              FocusManager.instance.primaryFocus?.unfocus();
             },
             visualDensity: VisualDensity.compact,
             splashColor: Colors.white.withOpacity(0.4),

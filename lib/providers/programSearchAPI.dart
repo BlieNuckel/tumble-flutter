@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tumble/models/programme.dart';
 import 'package:tumble/providers/backendProvider.dart';
 
@@ -22,5 +23,15 @@ class ProgramSearchAPI {
     return list.map((data) {
       return Program.fromJson(data);
     }).toList();
+  }
+
+  static Future<bool> scheduleAvailable(String scheduleId) async {
+    final response = await BackendProvider.getFullSchedule(scheduleId);
+
+    if (response.statusCode != 200) {
+      Fluttertoast.showToast(msg: "Schedule not found", toastLength: Toast.LENGTH_LONG, gravity: ToastGravity.BOTTOM);
+    }
+
+    return response.statusCode == 200;
   }
 }
