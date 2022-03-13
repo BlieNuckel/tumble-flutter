@@ -15,6 +15,7 @@ class WeekPage extends StatefulWidget {
 class _WeekPageState extends State<WeekPage> {
   final GlobalKey<CustomTopBarState> _keyTopBar = GlobalKey();
 
+  late List<Object> _schedules_for_db;
   late List<Object> _schedules;
   bool _isLoading = true;
 
@@ -27,10 +28,8 @@ class _WeekPageState extends State<WeekPage> {
 
   Future<void> getSchedules() async {
     // .getSchedule returns a list of DayDivider and Schedule objects
-    _schedules = await ScheduleApi.getWeekSplitSchedule(widget.currentScheduleId);
-
-    print(_schedules);
-
+    _schedules =
+        await ScheduleApi.getWeekSplitSchedule(widget.currentScheduleId);
     setState(() {
       _isLoading = false;
     });
@@ -50,6 +49,7 @@ class _WeekPageState extends State<WeekPage> {
               CustomTopBar(
                 key: _keyTopBar,
                 currentScheduleId: widget.currentScheduleId,
+                schedules: _schedules_for_db,
               )
             ];
           }

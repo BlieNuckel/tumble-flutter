@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:tumble/models/schedule.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
+import 'package:tumble/resources/database/repository/schedule_repository.dart';
 import 'package:tumble/views/search.dart';
 
 class CustomTopBar extends StatefulWidget {
   final String currentScheduleId;
+  final List<Object> schedules;
 
-  const CustomTopBar({Key? key, required this.currentScheduleId}) : super(key: key);
+  const CustomTopBar(
+      {Key? key, required this.currentScheduleId, required this.schedules})
+      : super(key: key);
 
   @override
   State<CustomTopBar> createState() => CustomTopBarState();
@@ -31,6 +36,7 @@ class CustomTopBarState extends State<CustomTopBar> {
                   children: [
                     FavoriteButton(
                       currentScheduleId: widget.currentScheduleId,
+                      schedules: widget.schedules,
                     )
                   ],
                 ),
@@ -43,7 +49,10 @@ class CustomTopBarState extends State<CustomTopBar> {
                             iconSize: 32,
                             onPressed: () {
                               Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => const ScheduleSearchPage()));
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ScheduleSearchPage()));
                             },
                             splashRadius: 20,
                             enableFeedback: true,
@@ -76,8 +85,11 @@ class CustomTopBarState extends State<CustomTopBar> {
 
 class FavoriteButton extends StatefulWidget {
   final String currentScheduleId;
+  final List<Object> schedules;
 
-  const FavoriteButton({Key? key, required this.currentScheduleId}) : super(key: key);
+  const FavoriteButton(
+      {Key? key, required this.currentScheduleId, required this.schedules})
+      : super(key: key);
 
   @override
   State<FavoriteButton> createState() => _FavoriteButtonState();
@@ -94,9 +106,17 @@ class _FavoriteButtonState extends State<FavoriteButton> {
     return Material(
         color: Colors.transparent,
         child: IconButton(
-            icon: _favorited ? const Icon(Icons.favorite) : const Icon(Icons.favorite_outline),
+            icon: _favorited
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_outline),
             iconSize: 30,
             onPressed: () {
+              /* Create instance of local Hive database */
+              ScheduleRepository.init();
+              // perform API call
+              ScheduleRepository.addSchedules(
+                  ScheduleApi.getScheduleForDb(widget.currentScheduleId));
+
               if (ScheduleApi.isFavorite(widget.currentScheduleId)) {
                 ScheduleApi.setFavorite('');
               } else {
@@ -109,6 +129,8 @@ class _FavoriteButtonState extends State<FavoriteButton> {
             },
             splashRadius: 20,
             enableFeedback: true,
-            color: _favorited ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onBackground));
+            color: _favorited
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.onBackground));
   }
 }

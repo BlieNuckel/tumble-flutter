@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:tumble/models/tableModel.dart';
 import 'package:tumble/resources/database/db/hive_methods.dart';
 import '../../../models/schedule.dart';
 
@@ -10,11 +11,15 @@ class ScheduleRepository {
     dbObject.init();
   }
 
-  static addSchedules(List<Schedule> schedules) => dbObject.addSchedules();
+  static addSchedules(Future<TableEntry> tableEntry) =>
+      dbObject.addSchedules(tableEntry);
 
-  static deleteSchedules(int scheduleId) => dbObject.deleteSchedules(scheduleId);
+  static deleteSchedules(int scheduleId) =>
+      dbObject.deleteSchedules(scheduleId);
 
-  static getSchedules() => dbObject.getSchedules();
+  static getAllSchedules() => dbObject.getAllSchedules();
+
+  static getSchedule(String scheduleId) => dbObject.getSchedule(scheduleId);
 
   static close() => dbObject.close();
 }

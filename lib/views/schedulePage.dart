@@ -14,7 +14,8 @@ import '../models/schedule.dart';
 class SchedulePage extends StatefulWidget {
   final String currentScheduleId;
 
-  const SchedulePage({Key? key, required this.currentScheduleId}) : super(key: key);
+  const SchedulePage({Key? key, required this.currentScheduleId})
+      : super(key: key);
 
   @override
   _SchedulePage createState() => _SchedulePage();
@@ -26,22 +27,26 @@ class _SchedulePage extends State<SchedulePage> {
 
   // Variable that contains a list of DayDivider and Schedule objects
   late List<Object> _schedules;
-  final ScrollController _scrollController = ScrollController(initialScrollOffset: 0, keepScrollOffset: true);
+  final ScrollController _scrollController =
+      ScrollController(initialScrollOffset: 0, keepScrollOffset: true);
   bool _isLoading = true;
 
   void scrollToTopCB() {
-    _scrollController.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.linearToEaseOut);
+    _scrollController.animateTo(0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.linearToEaseOut);
   }
 
   @override
   void initState() {
     _scrollController.addListener(() {
-      _keyTopBar.currentState!.updateVisibility(_scrollController.position.pixels);
-      _keyToTopBtn.currentState!.updateVisibility(_scrollController.position.pixels);
+      _keyTopBar.currentState!
+          .updateVisibility(_scrollController.position.pixels);
+      _keyToTopBtn.currentState!
+          .updateVisibility(_scrollController.position.pixels);
     });
 
     getSchedules();
-
     super.initState();
   }
 
@@ -90,7 +95,9 @@ class _SchedulePage extends State<SchedulePage> {
                     );
                   } else if (scheduleVar is DayDivider) {
                     return DayDividerWidget(
-                        dayName: scheduleVar.dayName, date: scheduleVar.date, firstDayDivider: index == 0);
+                        dayName: scheduleVar.dayName,
+                        date: scheduleVar.date,
+                        firstDayDivider: index == 0);
                   } else {
                     return Container();
                   }
@@ -102,6 +109,7 @@ class _SchedulePage extends State<SchedulePage> {
               ),
               CustomTopBar(
                 key: _keyTopBar,
+                schedules: _schedules,
                 currentScheduleId: widget.currentScheduleId,
               )
             ];
