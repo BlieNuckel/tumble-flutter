@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'package:date_util/date_util.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tumble/models/schedule.dart';
 import 'package:tumble/models/dayDivider.dart';
+import 'package:tumble/models/week.dart';
 import 'package:tumble/providers/backendProvider.dart';
 import 'package:tumble/providers/localStorage.dart';
 import 'package:tumble/service_locator.dart';
@@ -53,8 +54,28 @@ class ScheduleApi {
           });
         }
       });
-    } else {}
+    }
     return scheduleFromSnapshot(temp);
+  }
+
+  static Future<List<Week>> getWeekSplitSchedule(String scheduleId) async {
+    final List<Object> paddedList = await getPaddedSchedule(scheduleId);
+    List<Week> parsedWeekList = [];
+
+    int startOfWeek = 0;
+    int endOfWeek;
+
+    for (var i = 0; i < paddedList.length; i++) {
+      final currentObj = paddedList[i];
+      if (currentObj is DayDivider && currentObj.dayName == "monday") {
+        if (i > startOfWeek) {
+          endOfWeek = i;
+          parsedWeekList.add(Week.fromEventList(paddedList.sublist(startOfWeek, endOfWeek)));
+          startOfWeek = i;
+        }
+      }
+    }
+    return parsedWeekList;
   }
 
   static Future<List<Object>> getPaddedSchedule(String scheduleId) async {
@@ -73,24 +94,21 @@ class ScheduleApi {
         if (year != "_id" && year != "cachedAt") {
           // Loops through each "String month, Map days" object found in the year objects
           months.forEach((month, days) {
-            for (var i = 0; i < DateUtil().daysInMonth(monthMap[month], int.parse(year)); i++) {
+            for (var i = 0; i < DateUtils.getDaysInMonth(int.parse(year), monthMap[month]!); i++) {
               if (days[i.toString()] != null) {
                 temp.addAll(days[i.toString()]);
               } else {
-                temp.add({"date": i.toString().padLeft(2, '0') + monthMap[month].toString().padLeft(2, '0')});
+                temp.add({
+                  "date": i.toString().padLeft(2, '0') + monthMap[month].toString().padLeft(2, '0'),
+                  "dayName": DateFormat("DDDD").format(DateTime(int.parse(year), monthMap[month]!, i))
+                });
                 temp.add(null);
               }
             }
-
-            // Loops through each "String day, List event" object found in month objects
-            days.forEach((day, events) {
-              // Instantly adds all objects in the list to our temp list
-              temp.addAll(events);
-            });
           });
         }
       });
-    } else {}
+    }
     return paddedScheduleFromSnapshot(temp);
   }
 
@@ -107,7 +125,9 @@ class ScheduleApi {
 
   static List<Object> paddedScheduleFromSnapshot(List list) {
     return list.map((data) {
-      if (data.containsKey("dayName")) {
+      if (data == null) {
+        return Object();
+      } else if (data.containsKey("dayName")) {
         return DayDivider.fromJson(data);
       }
       return Schedule.fromJson(data);

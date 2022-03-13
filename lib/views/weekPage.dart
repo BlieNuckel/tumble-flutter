@@ -25,18 +25,15 @@ class _WeekPageState extends State<WeekPage> {
     super.initState();
   }
 
-  Future<List<Object>> getSchedules() async {
+  Future<void> getSchedules() async {
     // .getSchedule returns a list of DayDivider and Schedule objects
-    var temp = await ScheduleApi.getSchedule(widget.currentScheduleId);
+    _schedules = await ScheduleApi.getWeekSplitSchedule(widget.currentScheduleId);
 
-    var weekGroupedList = [];
-
-    for (final object in temp) {}
+    print(_schedules);
 
     setState(() {
       _isLoading = false;
     });
-    return _schedules;
   }
 
   @override
