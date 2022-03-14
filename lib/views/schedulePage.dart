@@ -47,7 +47,7 @@ class _SchedulePage extends State<SchedulePage> {
 
   Future<List<Object>> getSchedules() async {
     // .getSchedule returns a list of DayDivider and Schedule objects
-    _schedules = await ScheduleApi.getSchedule(widget.currentScheduleId);
+    _schedules = await ScheduleApi.getSchedule(widget.currentScheduleId, context);
     setState(() {
       _isLoading = false;
     });

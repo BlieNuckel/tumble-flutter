@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:tumble/models/schedule.dart';
 import 'package:tumble/models/dayDivider.dart';
@@ -30,7 +31,7 @@ class ScheduleApi {
   ///
   /// Actual return type is [List<Object>], but all items are instances
   /// of either [Schedule] or [DayDivider]
-  static Future<List<Object>> getSchedule(String scheduleId) async {
+  static Future<List<Object>> getSchedule(String scheduleId, BuildContext context) async {
     final response = await BackendProvider.getFullSchedule(scheduleId);
 
     List temp = [];
@@ -43,7 +44,7 @@ class ScheduleApi {
       // Loops through each "String year, Map months" object
       years.forEach((year, months) {
         // Makes sure the key is not one of the String, String entries in the object
-        if (year != "_id" && year != "cachedAt") {
+        if (year != "_id" && year != "cachedAt" && year != "baseUrl") {
           // Loops through each "String month, Map days" object found in the year objects
           months.forEach((month, days) {
             // Loops through each "String day, List event" object found in month objects
@@ -54,12 +55,14 @@ class ScheduleApi {
           });
         }
       });
+    } else {
+      Fluttertoast.showToast(msg: "Schedule not found", toastLength: Toast.LENGTH_LONG, gravity: ToastGravity.BOTTOM);
     }
     return scheduleFromSnapshot(temp);
   }
 
-  static Future<List<Week>> getWeekSplitSchedule(String scheduleId) async {
-    final List<Object> paddedList = await getPaddedSchedule(scheduleId);
+  static Future<List<Week>> getWeekSplitSchedule(String scheduleId, BuildContext context) async {
+    final List<Object> paddedList = await getPaddedSchedule(scheduleId, context);
     List<Week> parsedWeekList = [];
 
     int startOfWeek = 0;
@@ -79,7 +82,7 @@ class ScheduleApi {
     return parsedWeekList;
   }
 
-  static Future<List<Object>> getPaddedSchedule(String scheduleId) async {
+  static Future<List<Object>> getPaddedSchedule(String scheduleId, BuildContext context) async {
     final response = await BackendProvider.getFullSchedule(scheduleId);
 
     List temp = [];
@@ -92,7 +95,7 @@ class ScheduleApi {
       // Loops through each "String year, Map months" object
       years.forEach((year, months) {
         // Makes sure the key is not one of the String, String entries in the object
-        if (year != "_id" && year != "cachedAt") {
+        if (year != "_id" && year != "cachedAt" && year != "baseUrl") {
           // Loops through each "String month, Map days" object found in the year objects
           months.forEach((month, days) {
             final DateTime currentTime = DateTime.now();
@@ -121,6 +124,8 @@ class ScheduleApi {
           });
         }
       });
+    } else {
+      Fluttertoast.showToast(msg: "Schedule not found", toastLength: Toast.LENGTH_LONG, gravity: ToastGravity.BOTTOM);
     }
     return paddedScheduleFromSnapshot(temp);
   }

@@ -46,10 +46,7 @@ class _MainPageState extends State<HomePage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-        child: _currentPage,
-      ),
+      body: _currentPage,
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) => changePage(index),
         currentIndex: _currentIndex,
