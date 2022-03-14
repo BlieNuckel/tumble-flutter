@@ -67,10 +67,11 @@ class ScheduleApi {
 
     for (var i = 0; i < paddedList.length; i++) {
       final currentObj = paddedList[i];
-      if (currentObj is DayDivider && currentObj.dayName == "monday") {
+      if (currentObj is DayDivider && currentObj.dayName == "Monday") {
         if (i > startOfWeek) {
           endOfWeek = i;
-          parsedWeekList.add(Week.fromEventList(paddedList.sublist(startOfWeek, endOfWeek)));
+          parsedWeekList.add(Week.fromEventList(
+              (paddedList[startOfWeek] as DayDivider).weekNumber!, paddedList.sublist(startOfWeek, endOfWeek)));
           startOfWeek = i;
         }
       }
@@ -94,13 +95,25 @@ class ScheduleApi {
         if (year != "_id" && year != "cachedAt") {
           // Loops through each "String month, Map days" object found in the year objects
           months.forEach((month, days) {
-            for (var i = 0; i < DateUtils.getDaysInMonth(int.parse(year), monthMap[month]!); i++) {
+            final DateTime currentTime = DateTime.now();
+            final int firstDayOfWeek = currentTime.day - (currentTime.weekday - 1);
+            for (var i = 1; i <= DateUtils.getDaysInMonth(int.parse(year), monthMap[month]!); i++) {
+              if (currentTime.month == monthMap[month] && i < firstDayOfWeek) {
+                continue;
+              }
+
               if (days[i.toString()] != null) {
+                if (days[i.toString()][0].containsKey("dayName") && days[i.toString()][0]["dayName"] == "Monday") {
+                  days[i.toString()][0]["weekNumber"] =
+                      getWeekNumber(DateTime(int.parse(year), monthMap[month]!, i)).toString();
+                }
+
                 temp.addAll(days[i.toString()]);
               } else {
                 temp.add({
-                  "date": i.toString().padLeft(2, '0') + monthMap[month].toString().padLeft(2, '0'),
-                  "dayName": DateFormat("DDDD").format(DateTime(int.parse(year), monthMap[month]!, i))
+                  "date": i.toString() + "/" + monthMap[month].toString(),
+                  "dayName": DateFormat("EEEE").format(DateTime(int.parse(year), monthMap[month]!, i)),
+                  "weekNumber": getWeekNumber(DateTime(int.parse(year), monthMap[month]!, i)).toString()
                 });
                 temp.add(null);
               }
@@ -132,6 +145,25 @@ class ScheduleApi {
       }
       return Schedule.fromJson(data);
     }).toList();
+  }
+
+  static getWeeksInYear(int year) {
+    DateTime dec28 = DateTime(year, 12, 28);
+    int dayOfDec28 = int.parse(DateFormat("D").format(dec28));
+    return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
+  }
+
+  static int getWeekNumber(DateTime date) {
+    int dayOfYear = int.parse(DateFormat("D").format(date));
+    int weekOfYear = ((dayOfYear - date.weekday + 10) / 7).floor();
+
+    if (weekOfYear < 1) {
+      weekOfYear = getWeeksInYear(date.year - 1);
+    } else if (weekOfYear > getWeeksInYear(date.year)) {
+      weekOfYear = 1;
+    }
+
+    return weekOfYear;
   }
 
   static isExamCard(String cardTitle) {

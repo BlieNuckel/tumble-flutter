@@ -8,7 +8,7 @@ class Week {
 
   Week({required this.weekNumber, required this.events});
 
-  factory Week.fromEventList(List<Object> events) {
-    return Week(weekNumber: DateFormat("W").format((events[1] as Schedule).start), events: events);
+  factory Week.fromEventList(String weekNumber, List<Object> events) {
+    return Week(weekNumber: weekNumber, events: events);
   }
 }

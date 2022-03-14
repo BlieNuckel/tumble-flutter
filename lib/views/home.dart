@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tumble/views/schedulePage.dart';
 import 'package:tumble/views/weekPage.dart';
 
@@ -45,7 +46,10 @@ class _MainPageState extends State<HomePage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: _currentPage,
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+        child: _currentPage,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) => changePage(index),
         currentIndex: _currentIndex,

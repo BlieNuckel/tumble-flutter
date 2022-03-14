@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/providers/localStorage.dart';
 import 'package:tumble/service_locator.dart';
@@ -16,10 +16,20 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final Brightness brighness = MediaQuery.platformBrightnessOf(context);
+    bool isDarkMode = brighness == Brightness.dark;
+
     return MaterialApp(
       title: 'Tumble',
       theme: ThemeData(
         colorScheme: CustomColors.lightColors,
+        fontFamily: 'Roboto',
+      ),
+      darkTheme: ThemeData(
+        colorScheme: CustomColors.darkColors,
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          selectedItemColor: CustomColors.darkColors.primary,
+        ),
         fontFamily: 'Roboto',
       ),
       home: ScheduleApi.hasFavorite()
