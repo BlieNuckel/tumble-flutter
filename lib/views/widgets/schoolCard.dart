@@ -39,9 +39,14 @@ class SchoolCard extends StatelessWidget {
         },
         child: Row(
           children: [
-            SizedBox(
-              width: 100,
+            const SizedBox(
+              width: 5,
+              height: 100,
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(5),
               child: Image(
+                width: 90,
                 image: AssetImage(schoolLogo),
               ),
             ),
