@@ -25,7 +25,7 @@ class ToTopButtonState extends State<ToTopButton> {
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-      bottom: 100,
+      bottom: 30,
       right: _visible ? 30 : -60,
       duration: const Duration(milliseconds: 200),
       child: Container(

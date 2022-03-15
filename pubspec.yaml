@@ -26,6 +26,7 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+
 dependencies:
   flutter:
     sdk: flutter
@@ -53,6 +54,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  #? Enable if you need to generate launcher icons
+  # flutter_launcher_icons: 0.8.1
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -60,8 +64,20 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
 
+
+
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+#? Enable if you need to generate launcher icons
+# override_dependencies:
+#   image: 2.0.7
+# Flutter Icon generation config
+# flutter_icons:
+#   image_path: assets/images/ic_launcher.png
+#   android: false
+#   ios: true
 
 # The following section is specific to Flutter.
 flutter:
@@ -70,6 +86,15 @@ flutter:
     - assets/images/cardBanner.png
     - assets/images/tumbleAppLogo.png
     - assets/images/detailsSplitter.png
+    - assets/school_logos/hkr_logo.png
+    - assets/school_logos/ltu_logo.png
+    - assets/school_logos/mau_logo.png
+    - assets/school_logos/oru_logo.png
+    - assets/school_logos/hb_logo.png
+    - assets/school_logos/hig_logo.png
+    - assets/school_logos/hv_logo.png
+    - assets/school_logos/mdh_logo.png
+    - assets/school_logos/sh_logo.png
 
   fonts:
     - family: Roboto

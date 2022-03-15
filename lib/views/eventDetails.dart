@@ -130,23 +130,31 @@ class EventDetailsPage extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: Container(
+                      child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(event.location,
+                            Expanded(
+                              child: Text(
+                                event.location,
+                                softWrap: true,
                                 style: TextStyle(
                                     color: Theme.of(context).colorScheme.onSurface,
                                     fontSize: 21,
-                                    fontWeight: FontWeight.w100)),
-                            Text(
-                              event.lecturer,
-                              style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.w100),
+                                    fontWeight: FontWeight.w100),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                event.lecturer,
+                                textAlign: TextAlign.end,
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w100),
+                              ),
                             ),
                           ],
                         ),

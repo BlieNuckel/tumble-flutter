@@ -84,15 +84,12 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
                                   programName: program.programName,
                                   programId: program.programId,
                                   onPush: () async {
-                                    if (await ProgramSearchAPI
-                                        .scheduleAvailable(program.programId)) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => HomePage(
-                                                  currentScheduleId:
-                                                      program.programId)));
-                                    }
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => HomePage(
+                                                currentScheduleId:
+                                                    program.programId)));
                                   }),
                               Divider(
                                 indent: 20,
@@ -108,15 +105,12 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
                             programName: program.programName,
                             programId: program.programId,
                             onPush: () async {
-                              if (await ProgramSearchAPI.scheduleAvailable(
-                                  program.programId)) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomePage(
-                                            currentScheduleId:
-                                                program.programId)));
-                              }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomePage(
+                                          currentScheduleId:
+                                              program.programId)));
                             });
                       }),
                     );

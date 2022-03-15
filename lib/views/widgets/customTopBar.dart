@@ -3,6 +3,7 @@ import 'package:tumble/models/schedule.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/resources/database/repository/schedule_repository.dart';
 import 'package:tumble/views/search.dart';
+import 'package:tumble/views/settingsPage.dart';
 
 class CustomTopBar extends StatefulWidget {
   final String currentScheduleId;
@@ -62,7 +63,9 @@ class CustomTopBarState extends State<CustomTopBar> {
                         child: IconButton(
                             icon: const Icon(Icons.settings_outlined),
                             iconSize: 32,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: ((context) => const SettingsPage())));
+                            },
                             splashRadius: 20,
                             enableFeedback: true,
                             color: Theme.of(context).colorScheme.onBackground))
