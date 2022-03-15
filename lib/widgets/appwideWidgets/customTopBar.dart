@@ -6,7 +6,7 @@ import 'package:tumble/models/tableModel.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/resources/database/repository/schedule_repository.dart';
 import 'package:tumble/pages/selectorViews/search.dart';
-import 'package:tumble/views/settingsPage.dart';
+import 'package:tumble/pages/utilViews/settingsPage.dart';
 
 class CustomTopBar extends StatefulWidget {
   final String currentScheduleId;

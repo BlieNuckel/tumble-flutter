@@ -20,6 +20,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
   final FocusNode _focus = FocusNode();
   List<Program> _programList = [];
   bool _loading = false;
+  bool _searched = false;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
   void loadScheduleCB(String searchQuery) async {
     setState(() {
       _loading = true;
+      _searched = true;
     });
     List<Program> programsTemp =
         await ProgramSearchAPI.getProgramList(searchQuery);
@@ -71,6 +73,17 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
                 child: () {
                   if (_loading) {
                     return const LoadCircle();
+                  } else if (_programList.isEmpty && _searched) {
+                    return Center(
+                      child: Text(
+                        "No schedules found",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    );
                   } else {
                     return ListView.builder(
                       scrollDirection: Axis.vertical,

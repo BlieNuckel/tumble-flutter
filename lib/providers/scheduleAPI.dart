@@ -74,6 +74,8 @@ class ScheduleApi {
             ? getPaddedList(data["schedule"])
             : getList(data["schedule"]);
       }
+    } else {
+      eventList = await webFetch(scheduleId, padded);
     }
     return padded
         ? paddedScheduleFromSnapshot(eventList)
@@ -181,6 +183,23 @@ class ScheduleApi {
       });
     });
     return temp;
+  }
+
+  static Future<List> webFetch(String scheduleId, bool padded) async {
+    Response response = await BackendProvider.getFullSchedule(scheduleId);
+
+    if (response.statusCode == 200) {
+      Map data = jsonDecode(utf8.decode(response.bodyBytes));
+      Map years = data["schedule"];
+
+      return padded ? getPaddedList(years) : getList(years);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Schedule not found",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM);
+      return [];
+    }
   }
 
   static getWeeksInYear(int year) {

@@ -32,9 +32,6 @@ class _WeekPageState extends State<WeekPage> {
     // .getSchedule returns a list of DayDivider and Schedule objects
     _schedules = await ScheduleApi.getWeekSplitSchedule(
         widget.currentScheduleId, context);
-
-    print(_schedules[0].weekNumber);
-
     setState(() {
       _isLoading = false;
     });
