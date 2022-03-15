@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tumble/models/week.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
-import 'package:tumble/views/widgets/customTopBar.dart';
-import 'package:tumble/views/widgets/loadingCircle.dart';
-import 'package:tumble/views/widgets/weekWidget.dart';
+import 'package:tumble/widgets/appwideWidgets/customTopBar.dart';
+import 'package:tumble/widgets/appwideWidgets/loadingCircle.dart';
+import 'package:tumble/widgets/weekViewWidgets/weekWidget.dart';
 
 class WeekPage extends StatefulWidget {
   final String currentScheduleId;
@@ -17,7 +17,7 @@ class WeekPage extends StatefulWidget {
 class _WeekPageState extends State<WeekPage> {
   final GlobalKey<CustomTopBarState> _keyTopBar = GlobalKey();
 
-  late List<Object> _schedules_for_db;
+  // late List<Object> _schedules_for_db;
   late List<Week> _schedules;
   bool _isLoading = true;
 
@@ -63,7 +63,6 @@ class _WeekPageState extends State<WeekPage> {
               CustomTopBar(
                 key: _keyTopBar,
                 currentScheduleId: widget.currentScheduleId,
-                schedules: _schedules_for_db,
               )
             ];
           }

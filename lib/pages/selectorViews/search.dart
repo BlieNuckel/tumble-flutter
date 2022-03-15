@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tumble/models/programme.dart';
 import 'package:tumble/providers/programSearchAPI.dart';
-import 'package:tumble/views/home.dart';
-import 'package:tumble/views/widgets/loadingCircle.dart';
-import 'package:tumble/views/widgets/programCard.dart';
-import 'package:tumble/views/widgets/scheduleSearchBar.dart';
-import 'package:tumble/views/widgets/slideableLogo.dart';
+import 'package:tumble/pages/scheduleViews/home.dart';
+import 'package:tumble/widgets/appwideWidgets/loadingCircle.dart';
+import 'package:tumble/widgets/searchPageWidgets/programCard.dart';
+import 'package:tumble/widgets/searchPageWidgets/scheduleSearchBar.dart';
+import 'package:tumble/widgets/searchPageWidgets/slideableLogo.dart';
 
 class ScheduleSearchPage extends StatefulWidget {
   const ScheduleSearchPage({Key? key}) : super(key: key);

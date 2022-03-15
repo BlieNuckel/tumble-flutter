@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
@@ -10,7 +13,11 @@ class BackendProvider {
         {'school': SchoolSelectorProvider.getDefaultSchool()!.name});
     // var uri = Uri.https('10.0.2.2:8000', '/schedules/' + scheduleId, {'school': 'mau'});
 
-    return await http.get(uri);
+    try {
+      return await http.get(uri);
+    } on SocketException {
+      return http.Response("Failed to fetch", 502);
+    }
   }
 
   static Future<Response> getSearchResults(String searchQuery) async {
@@ -21,6 +28,14 @@ class BackendProvider {
     });
     // Uri.https('10.0.2.2:8000', '/schedules/search/', {'search': searchQuery, 'school': 'mau'});
 
-    return await http.get(uri);
+    try {
+      return await http.get(uri);
+    } on SocketException {
+      Fluttertoast.showToast(
+          msg: "Failed to fetch search results",
+          toastLength: Toast.LENGTH_LONG);
+
+      return http.Response("Failed to fetch", 502);
+    }
   }
 }

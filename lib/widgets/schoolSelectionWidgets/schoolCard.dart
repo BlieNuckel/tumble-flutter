@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
 import 'package:tumble/util/school_enum.dart';
-import 'package:tumble/views/search.dart';
+import 'package:tumble/pages/selectorViews/search.dart';
 
 class SchoolCard extends StatelessWidget {
   final SchoolEnum schoolId;
@@ -35,7 +35,10 @@ class SchoolCard extends StatelessWidget {
         padding: const EdgeInsets.all(0),
         onPressed: () {
           SchoolSelectorProvider.setDefaultSchool(schoolId);
-          Navigator.push(context, MaterialPageRoute(builder: ((context) => const ScheduleSearchPage())));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: ((context) => const ScheduleSearchPage())));
         },
         child: Row(
           children: [

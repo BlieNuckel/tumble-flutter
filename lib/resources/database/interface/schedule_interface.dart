@@ -4,13 +4,15 @@ import '../../../models/tableModel.dart';
 abstract class ScheduleInterface {
   init();
 
-  addSchedules(Future<TableEntry> tableRow);
+  addSchedules(TableEntry tableRow);
 
   Future<List<Object>?> getAllSchedules();
 
-  Future<Map<String, dynamic>?> getSchedule(String scheduleId);
+  Future<dynamic> getSchedule(String scheduleId);
 
-  deleteSchedules(int scheduleId);
+  deleteSchedules(String scheduleId);
+
+  getScheduleCachedTime(String scheduleId);
 
   close();
 }

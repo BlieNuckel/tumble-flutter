@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tumble/models/school.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
-import 'package:tumble/views/widgets/schoolCard.dart';
+import 'package:tumble/widgets/schoolSelectionWidgets/schoolCard.dart';
 
 class SchoolSelectionPage extends StatelessWidget {
   SchoolSelectionPage({Key? key}) : super(key: key);

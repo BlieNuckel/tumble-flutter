@@ -4,10 +4,10 @@ import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/providers/localStorage.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
 import 'package:tumble/service_locator.dart';
-import 'package:tumble/views/home.dart';
+import 'package:tumble/pages/scheduleViews/home.dart';
 import 'package:tumble/theme/colors.dart';
-import 'package:tumble/views/schoolSelectionPage.dart';
-import 'package:tumble/views/search.dart';
+import 'package:tumble/pages/selectorViews/schoolSelectionPage.dart';
+import 'package:tumble/pages/selectorViews/search.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,12 +37,14 @@ class MyApp extends StatelessWidget {
         home: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
-              statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark),
+              statusBarIconBrightness:
+                  isDarkMode ? Brightness.light : Brightness.dark),
           child: () {
             if (SchoolSelectorProvider.schoolSelected()) {
               if (ScheduleApi.hasFavorite()) {
                 return HomePage(
-                  currentScheduleId: locator<LocalStorageService>().getScheduleFavorite(),
+                  currentScheduleId:
+                      locator<LocalStorageService>().getScheduleFavorite(),
                 );
               } else {
                 return const ScheduleSearchPage();

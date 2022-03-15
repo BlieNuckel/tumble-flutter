@@ -31,54 +31,59 @@ class ScheduleApi {
     'december': 12,
   };
 
-  static Future<TableEntry> getScheduleForDb(String scheduleId) async {
-    final response = await BackendProvider.getFullSchedule(scheduleId);
-    Map data = jsonDecode(utf8.decode(response.bodyBytes));
-    return TableEntry(jsonString: json.encode(data), scheduleId: scheduleId);
+  static void saveCurrScheduleToDb(String scheduleId) async {
+    ScheduleRepository.init();
+    Response response = await BackendProvider.getFullSchedule(scheduleId);
+    if (response.statusCode == 200) {
+      Map data = jsonDecode(utf8.decode(response.bodyBytes));
+
+      await ScheduleRepository.deleteSchedules(scheduleId);
+
+      await ScheduleRepository.addSchedules(
+          TableEntry(jsonString: json.encode(data), scheduleId: scheduleId));
+    }
   }
 
   /// Returns a [List] that corresponds to the given [scheduleId].
   ///
   /// Actual return type is [List<Object>], but all items are instances
   /// of either [Schedule] or [DayDivider]
+  ///
   static Future<List<Object>> getSchedule(
-      String scheduleId, BuildContext context) async {
-    final response = await BackendProvider.getFullSchedule(scheduleId);
+      String scheduleId, BuildContext context, bool padded) async {
+    ScheduleRepository.init();
+    List eventList = [];
+    if (isFavorite(scheduleId)) {
+      DateTime cacheTime =
+          await ScheduleRepository.getScheduleCachedTime(scheduleId);
 
-    List temp = [];
+      if (DateTime.now().difference(cacheTime).inMinutes > 10) {
+        saveCurrScheduleToDb(scheduleId);
+      }
 
-    if (response.statusCode == 200) {
-      Map data = jsonDecode(utf8.decode(response.bodyBytes));
+      Map? data = await ScheduleRepository.getSchedule(scheduleId);
 
-      Map years = data["schedule"]; // Strips the outer "schedule" map
-
-      // Loops through each "String year, Map months" object
-      years.forEach((year, months) {
-        // Makes sure the key is not one of the String, String entries in the object
-        if (year != "_id" && year != "cachedAt" && year != "baseUrl") {
-          // Loops through each "String month, Map days" object found in the year objects
-          months.forEach((month, days) {
-            // Loops through each "String day, List event" object found in month objects
-            days.forEach((day, events) {
-              // Instantly adds all objects in the list to our temp list
-              temp.addAll(events);
-            });
-          });
-        }
-      });
-    } else {
-      Fluttertoast.showToast(
-          msg: "Schedule not found",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM);
+      /* If database returns empty schedule we toast */
+      if (data == null) {
+        Fluttertoast.showToast(
+            msg: "Schedule not found",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM);
+      } else {
+        eventList = padded
+            ? getPaddedList(data["schedule"])
+            : getList(data["schedule"]);
+      }
     }
-    throw (Exception);
+    return padded
+        ? paddedScheduleFromSnapshot(eventList)
+        : scheduleFromSnapshot(eventList);
   }
 
   static Future<List<Week>> getWeekSplitSchedule(
       String scheduleId, BuildContext context) async {
     final List<Object> paddedList =
-        await getPaddedSchedule(scheduleId, context);
+        await getSchedule(scheduleId, context, true);
     List<Week> parsedWeekList = [];
 
     int startOfWeek = 0;
@@ -97,67 +102,6 @@ class ScheduleApi {
       }
     }
     return parsedWeekList;
-  }
-
-  static Future<List<Object>> getPaddedSchedule(
-      String scheduleId, BuildContext context) async {
-    final response = await BackendProvider.getFullSchedule(scheduleId);
-
-    List temp = [];
-
-    if (response.statusCode == 200) {
-      Map data = jsonDecode(utf8.decode(response.bodyBytes));
-
-      Map years = data["schedule"]; // Strips the outer "schedule" map
-
-      // Loops through each "String year, Map months" object
-      years.forEach((year, months) {
-        // Makes sure the key is not one of the String, String entries in the object
-        if (year != "_id" && year != "cachedAt" && year != "baseUrl") {
-          // Loops through each "String month, Map days" object found in the year objects
-          months.forEach((month, days) {
-            final DateTime currentTime = DateTime.now();
-            final int firstDayOfWeek =
-                currentTime.day - (currentTime.weekday - 1);
-            for (var i = 1;
-                i <=
-                    DateUtils.getDaysInMonth(int.parse(year), monthMap[month]!);
-                i++) {
-              if (currentTime.month == monthMap[month] && i < firstDayOfWeek) {
-                continue;
-              }
-
-              if (days[i.toString()] != null) {
-                if (days[i.toString()][0].containsKey("dayName") &&
-                    days[i.toString()][0]["dayName"] == "Monday") {
-                  days[i.toString()][0]["weekNumber"] = getWeekNumber(
-                          DateTime(int.parse(year), monthMap[month]!, i))
-                      .toString();
-                }
-
-                temp.addAll(days[i.toString()]);
-              } else {
-                temp.add({
-                  "date": i.toString() + "/" + monthMap[month].toString(),
-                  "dayName": DateFormat("EEEE")
-                      .format(DateTime(int.parse(year), monthMap[month]!, i)),
-                  "weekNumber": getWeekNumber(
-                          DateTime(int.parse(year), monthMap[month]!, i))
-                      .toString()
-                });
-                temp.add(null);
-              }
-            }
-          });
-        }
-      });
-    } else {
-      Fluttertoast.showToast(
-          msg: "Schedule not found",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM);
-    }
-    throw (Exception);
   }
 
   /// Method to turn unknown [list] of Objects into correct
@@ -180,6 +124,63 @@ class ScheduleApi {
       }
       return Schedule.fromJson(data);
     }).toList();
+  }
+
+  static List getPaddedList(years) {
+    List temp = [];
+    // Loops through each "String year, Map months" object
+    years.forEach((year, months) {
+      // Loops through each "String month, Map days" object found in the year objects
+      months.forEach((month, days) {
+        final DateTime currentTime = DateTime.now();
+        final int firstDayOfWeek = currentTime.day - (currentTime.weekday - 1);
+        for (var i = 1;
+            i <= DateUtils.getDaysInMonth(int.parse(year), monthMap[month]!);
+            i++) {
+          if (currentTime.month == monthMap[month] && i < firstDayOfWeek) {
+            continue;
+          }
+
+          if (days[i.toString()] != null) {
+            if (days[i.toString()][0].containsKey("dayName") &&
+                days[i.toString()][0]["dayName"] == "Monday") {
+              days[i.toString()][0]["weekNumber"] =
+                  getWeekNumber(DateTime(int.parse(year), monthMap[month]!, i))
+                      .toString();
+            }
+
+            temp.addAll(days[i.toString()]);
+          } else {
+            temp.add({
+              "date": i.toString() + "/" + monthMap[month].toString(),
+              "dayName": DateFormat("EEEE")
+                  .format(DateTime(int.parse(year), monthMap[month]!, i)),
+              "weekNumber":
+                  getWeekNumber(DateTime(int.parse(year), monthMap[month]!, i))
+                      .toString()
+            });
+            temp.add(null);
+          }
+        }
+      });
+    });
+    return temp;
+  }
+
+  static List getList(years) {
+    List temp = [];
+    // Loops through each "String year, Map months" object
+    years.forEach((year, months) {
+      // Loops through each "String month, Map days" object found in the year objects
+      months.forEach((month, days) {
+        // Loops through each "String day, List event" object found in month objects
+        days.forEach((day, events) {
+          // Instantly adds all objects in the list to our temp list
+          temp.addAll(events);
+        });
+      });
+    });
+    return temp;
   }
 
   static getWeeksInYear(int year) {

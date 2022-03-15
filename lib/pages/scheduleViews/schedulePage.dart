@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/models/dayDivider.dart';
-import 'package:tumble/views/eventDetails.dart';
-import 'package:tumble/views/search.dart';
-import 'package:tumble/views/widgets/customTopBar.dart';
-import 'package:tumble/views/widgets/daydivider.dart';
-import 'package:tumble/views/widgets/loadingCircle.dart';
-import 'package:tumble/views/widgets/schedulecard.dart';
-import 'package:tumble/views/widgets/toTopBtn.dart';
+import 'package:tumble/pages/scheduleViews/eventDetails.dart';
+import 'package:tumble/pages/selectorViews/search.dart';
+import 'package:tumble/widgets/appwideWidgets/customTopBar.dart';
+import 'package:tumble/widgets/scheduleViewWidgets/daydivider.dart';
+import 'package:tumble/widgets/appwideWidgets/loadingCircle.dart';
+import 'package:tumble/widgets/scheduleViewWidgets/schedulecard.dart';
+import 'package:tumble/widgets/scheduleViewWidgets/toTopBtn.dart';
 
-import '../models/schedule.dart';
+import '/models/schedule.dart';
 
 class SchedulePage extends StatefulWidget {
   final String currentScheduleId;
@@ -52,7 +52,8 @@ class _SchedulePage extends State<SchedulePage> {
 
   Future<List<Object>> getSchedules() async {
     // .getSchedule returns a list of DayDivider and Schedule objects
-    _schedules = await ScheduleApi.getSchedule(widget.currentScheduleId, context);
+    _schedules = (await ScheduleApi.getSchedule(
+        widget.currentScheduleId, context, false));
     setState(() {
       _isLoading = false;
     });
@@ -109,7 +110,6 @@ class _SchedulePage extends State<SchedulePage> {
               ),
               CustomTopBar(
                 key: _keyTopBar,
-                schedules: _schedules,
                 currentScheduleId: widget.currentScheduleId,
               )
             ];

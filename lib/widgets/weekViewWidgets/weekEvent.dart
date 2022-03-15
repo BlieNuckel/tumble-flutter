@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tumble/models/schedule.dart';
-import 'package:tumble/views/eventDetails.dart';
+import 'package:tumble/pages/scheduleViews/eventDetails.dart';
 
 class WeekEvent extends StatelessWidget {
   final Schedule? event;
@@ -40,8 +40,12 @@ class WeekEvent extends StatelessWidget {
               Container(
                 width: 3,
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(2), bottomLeft: Radius.circular(2)),
-                  color: Color(int.parse("ff" + event!.color.replaceAll("#", ""), radix: 16)),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(2),
+                      bottomLeft: Radius.circular(2)),
+                  color: Color(int.parse(
+                      "ff" + event!.color.replaceAll("#", ""),
+                      radix: 16)),
                 ),
               ),
               Stack(
@@ -49,12 +53,17 @@ class WeekEvent extends StatelessWidget {
                 children: [
                   Container(
                     width: 100,
-                    color: Color(int.parse("ff" + event!.color.replaceAll("#", ""), radix: 16)).withOpacity(0.35),
+                    color: Color(int.parse(
+                            "ff" + event!.color.replaceAll("#", ""),
+                            radix: 16))
+                        .withOpacity(0.35),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 5),
                     child: Text(
-                      DateFormat("HH:mm").format(event!.start) + " - " + DateFormat("HH:mm").format(event!.end),
+                      DateFormat("HH:mm").format(event!.start) +
+                          " - " +
+                          DateFormat("HH:mm").format(event!.end),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 16,
@@ -107,7 +116,9 @@ class WeekEvent extends StatelessWidget {
             Container(
               width: 3,
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(topLeft: Radius.circular(2), bottomLeft: Radius.circular(2)),
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(2),
+                    bottomLeft: Radius.circular(2)),
                 color: Colors.grey.shade400,
               ),
             ),

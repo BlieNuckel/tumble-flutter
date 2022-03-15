@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tumble/views/schedulePage.dart';
-import 'package:tumble/views/weekPage.dart';
+import 'package:tumble/pages/scheduleViews/schedulePage.dart';
+import 'package:tumble/pages/scheduleViews/weekPage.dart';
 
 class HomePage extends StatefulWidget {
   final String currentScheduleId;
@@ -53,8 +53,10 @@ class _MainPageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 40,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_view_day_rounded), label: "Schedule"),
-          BottomNavigationBarItem(icon: Icon(Icons.view_week_rounded), label: "Week"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_view_day_rounded), label: "Schedule"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.view_week_rounded), label: "Week"),
         ],
       ),
     );

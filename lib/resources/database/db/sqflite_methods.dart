@@ -18,6 +18,7 @@ class HiveMethods implements ScheduleInterface {
 
   String id = "schedule_id";
   String jsonString = "json_string";
+  String cachedAt = "cached_at";
 
   Future<Database?> get db async {
     if (_db != null) {
@@ -43,27 +44,30 @@ class HiveMethods implements ScheduleInterface {
   /* Create new table for databasse */
   _onCreateSchedule(Database db, int version) async {
     String createTableQuery =
-        "CREATE TABLE $tableName ($id TEXT PRIMARY KEY, $jsonString TEXT)";
+        "CREATE TABLE $tableName ($id TEXT PRIMARY KEY, $jsonString TEXT, $cachedAt TEXT)";
     await db.execute(createTableQuery);
   }
 
   @override
-  addSchedules(Future<TableEntry> tableRow) async {
-    final tableEntry = await tableRow;
+  addSchedules(TableEntry tableRow) async {
+    final tableEntry = tableRow;
     var dbClient = await db;
     await dbClient?.insert(tableName, tableEntry.toMap(tableEntry));
   }
 
   @override
-  close() {
-    // TODO: implement close
-    throw UnimplementedError();
-  }
+  close() {}
 
   @override
-  deleteSchedules(int scheduleId) {
-    // TODO: implement deleteSchedules
-    throw UnimplementedError();
+  Future<bool> deleteSchedules(String scheduleId) async {
+    try {
+      var dbClient = await db;
+      int? rowsAffected = await dbClient
+          ?.delete(tableName, where: "$id = ?", whereArgs: [scheduleId]);
+      return rowsAffected != null && rowsAffected != 0;
+    } catch (e) {
+      return false;
+    }
   }
 
   @override
@@ -78,16 +82,13 @@ class HiveMethods implements ScheduleInterface {
           jsonString,
         ],
       );
-
       List<Object> elementList = [];
-
       /* Gets all schedules from database */
       if (maps!.isNotEmpty) {
         for (Map map in maps) {
           elementList.add(map);
         }
       }
-
       return elementList;
     } catch (e) {
       return null;
@@ -95,23 +96,38 @@ class HiveMethods implements ScheduleInterface {
   }
 
   @override
-  Future<Map<String, dynamic>?> getSchedule(String scheduleId) async {
+  Future<dynamic> getSchedule(String scheduleId) async {
     try {
       var dbClient = await db;
 
       List<Map<String, dynamic>>? maps = await dbClient?.query(tableName,
-          columns: [
-            id,
-            jsonString,
-          ],
-          where: 'schedule_id = ?',
+          columns: [id, jsonString, cachedAt],
+          where: '$id = ?',
           whereArgs: [scheduleId]);
 
       if (maps!.isNotEmpty) {
-        return maps[0];
+        return jsonDecode(maps[0][jsonString]);
       }
       return null;
     } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<DateTime?> getScheduleCachedTime(String scheduleId) async {
+    try {
+      var dbClient = await db;
+
+      List<Map<String, dynamic>>? maps = await dbClient?.query(tableName,
+          columns: [id, jsonString, cachedAt],
+          where: '$id = ?',
+          whereArgs: [scheduleId]);
+      if (maps!.isNotEmpty) {
+        return DateTime.parse(maps[0][cachedAt]);
+      }
+      return null;
+    } on FormatException {
       return null;
     }
   }

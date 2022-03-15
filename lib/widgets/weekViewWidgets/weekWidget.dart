@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tumble/models/dayDivider.dart';
 import 'package:tumble/models/schedule.dart';
 import 'package:tumble/models/week.dart';
-import 'package:tumble/views/widgets/weekEvent.dart';
+import 'package:tumble/widgets/weekViewWidgets/weekEvent.dart';
 
 class WeekWidget extends StatelessWidget {
   final Week week;
@@ -80,7 +80,9 @@ class WeekWidget extends StatelessWidget {
             child: Text(
               "w. " + week.weekNumber,
               style: TextStyle(
-                  color: Theme.of(context).colorScheme.onBackground, fontSize: 20, fontWeight: FontWeight.w300),
+                  color: Theme.of(context).colorScheme.onBackground,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300),
             ),
           )
         ],

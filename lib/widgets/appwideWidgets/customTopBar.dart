@@ -1,16 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:tumble/models/schedule.dart';
+import 'package:tumble/models/tableModel.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/resources/database/repository/schedule_repository.dart';
-import 'package:tumble/views/search.dart';
+import 'package:tumble/pages/selectorViews/search.dart';
 import 'package:tumble/views/settingsPage.dart';
 
 class CustomTopBar extends StatefulWidget {
   final String currentScheduleId;
-  final List<Object> schedules;
 
-  const CustomTopBar(
-      {Key? key, required this.currentScheduleId, required this.schedules})
+  const CustomTopBar({Key? key, required this.currentScheduleId})
       : super(key: key);
 
   @override
@@ -37,7 +38,6 @@ class CustomTopBarState extends State<CustomTopBar> {
                   children: [
                     FavoriteButton(
                       currentScheduleId: widget.currentScheduleId,
-                      schedules: widget.schedules,
                     )
                   ],
                 ),
@@ -64,7 +64,11 @@ class CustomTopBarState extends State<CustomTopBar> {
                             icon: const Icon(Icons.settings_outlined),
                             iconSize: 32,
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: ((context) => const SettingsPage())));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: ((context) =>
+                                          const SettingsPage())));
                             },
                             splashRadius: 20,
                             enableFeedback: true,
@@ -88,10 +92,8 @@ class CustomTopBarState extends State<CustomTopBar> {
 
 class FavoriteButton extends StatefulWidget {
   final String currentScheduleId;
-  final List<Object> schedules;
 
-  const FavoriteButton(
-      {Key? key, required this.currentScheduleId, required this.schedules})
+  const FavoriteButton({Key? key, required this.currentScheduleId})
       : super(key: key);
 
   @override
@@ -114,16 +116,12 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                 : const Icon(Icons.favorite_outline),
             iconSize: 30,
             onPressed: () {
-              /* Create instance of local Hive database */
-              ScheduleRepository.init();
-              // perform API call
-              ScheduleRepository.addSchedules(
-                  ScheduleApi.getScheduleForDb(widget.currentScheduleId));
-
               if (ScheduleApi.isFavorite(widget.currentScheduleId)) {
                 ScheduleApi.setFavorite('');
+                ScheduleRepository.deleteSchedules(widget.currentScheduleId);
               } else {
                 ScheduleApi.setFavorite(widget.currentScheduleId);
+                ScheduleApi.saveCurrScheduleToDb(widget.currentScheduleId);
               }
 
               setState(() {

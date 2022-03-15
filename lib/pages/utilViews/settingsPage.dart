@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
-import 'package:tumble/views/schoolSelectionPage.dart';
-import 'package:tumble/views/widgets/settingsSection.dart';
-import 'package:tumble/views/widgets/settingsTiles.dart';
+import 'package:tumble/pages/selectorViews/schoolSelectionPage.dart';
+import 'package:tumble/widgets/settingsWidgets/settingsSection.dart';
+import 'package:tumble/widgets/settingsWidgets/settingsTiles.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -23,10 +23,14 @@ class SettingsPage extends StatelessWidget {
             tiles: [
               ButtonSettingsTile(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: ((context) => SchoolSelectionPage())));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => SchoolSelectionPage())));
                 },
                 title: "Change school",
-                subtitle: "Current school is " + SchoolSelectorProvider.getDefaultSchool()!.name,
+                subtitle: "Current school is " +
+                    SchoolSelectorProvider.getDefaultSchool()!.name,
                 prefixIcon: Icons.swap_horizontal_circle,
               ),
             ],
