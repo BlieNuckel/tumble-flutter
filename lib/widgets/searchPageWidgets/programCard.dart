@@ -10,13 +10,19 @@ class ProgramCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String _programCode = programName.split(', ')[0];
-    final String _programName = programName.split(', ')[1];
+    final String _programCode = programName.split(', ')[0].replaceAll(',', '');
+    String _programName;
+
+    try {
+      _programName = programName.split(', ')[1];
+    } on RangeError {
+      _programName = "";
+    }
 
     return Container(
       color: Theme.of(context).colorScheme.background,
       width: double.infinity,
-      height: 100,
+      height: 110,
       child: TextButton(
         onPressed: () => onPush(),
         style: ButtonStyle(
