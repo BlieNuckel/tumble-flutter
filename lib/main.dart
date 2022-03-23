@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
-import 'package:tumble/providers/localStorage.dart';
+import 'package:tumble/resources/database/db/localStorageAPI.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
+import 'package:tumble/resources/database/repository/schedule_repository.dart';
 import 'package:tumble/service_locator.dart';
 import 'package:tumble/pages/scheduleViews/home.dart';
 import 'package:tumble/theme/colors.dart';
@@ -11,6 +12,7 @@ import 'package:tumble/pages/selectorViews/search.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  ScheduleRepository.init();
   setup().then((value) => runApp(const MyApp()));
 }
 

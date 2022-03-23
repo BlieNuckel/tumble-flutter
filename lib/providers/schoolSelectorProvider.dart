@@ -1,8 +1,9 @@
 import 'package:tumble/models/school.dart';
-import 'package:tumble/providers/localStorage.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/service_locator.dart';
 import 'package:tumble/util/school_enum.dart';
+
+import '../resources/database/db/localStorageAPI.dart';
 
 class SchoolSelectorProvider {
   static final _localStorageService = locator<LocalStorageService>();
@@ -55,7 +56,8 @@ class SchoolSelectorProvider {
   ];
 
   static bool schoolSelected() {
-    return _localStorageService.getSchoolDefault() != "" && _localStorageService.getSchoolDefault() != "null";
+    return _localStorageService.getSchoolDefault() != "" &&
+        _localStorageService.getSchoolDefault() != "null";
   }
 
   static void setDefaultSchool(SchoolEnum school) {

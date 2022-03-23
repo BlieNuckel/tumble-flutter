@@ -7,10 +7,11 @@ import 'package:tumble/models/schedule.dart';
 import 'package:tumble/models/dayDivider.dart';
 import 'package:tumble/models/week.dart';
 import 'package:tumble/providers/backendProvider.dart';
-import 'package:tumble/providers/localStorage.dart';
+import 'package:tumble/resources/database/db/localStorageAPI.dart';
 import 'package:tumble/service_locator.dart';
+import 'package:tumble/util/weekUtils.dart';
 
-import '../models/tableModel.dart';
+import '../models/scheduleModel.dart';
 import '../resources/database/repository/schedule_repository.dart';
 
 class ScheduleApi {
@@ -32,15 +33,12 @@ class ScheduleApi {
   };
 
   static void saveCurrScheduleToDb(String scheduleId) async {
-    ScheduleRepository.init();
     Response response = await BackendProvider.getFullSchedule(scheduleId);
     if (response.statusCode == 200) {
       Map data = jsonDecode(utf8.decode(response.bodyBytes));
-
       await ScheduleRepository.deleteSchedules(scheduleId);
-
-      await ScheduleRepository.addSchedules(
-          TableEntry(jsonString: json.encode(data), scheduleId: scheduleId));
+      await ScheduleRepository.addScheduleEntry(
+          ScheduleDTO(jsonString: json.encode(data), scheduleId: scheduleId));
     }
   }
 
@@ -51,18 +49,14 @@ class ScheduleApi {
   ///
   static Future<List<Object>> getSchedule(
       String scheduleId, BuildContext context, bool padded) async {
-    ScheduleRepository.init();
     List eventList = [];
     if (isFavorite(scheduleId)) {
       DateTime cacheTime =
           await ScheduleRepository.getScheduleCachedTime(scheduleId);
-
       if (DateTime.now().difference(cacheTime).inMinutes > 10) {
         saveCurrScheduleToDb(scheduleId);
       }
-
-      Map? data = await ScheduleRepository.getSchedule(scheduleId);
-
+      ScheduleDTO? data = await ScheduleRepository.getScheduleEntry(scheduleId);
       /* If database returns empty schedule we toast */
       if (data == null) {
         Fluttertoast.showToast(
@@ -70,9 +64,10 @@ class ScheduleApi {
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM);
       } else {
+        // MAKE SURE WORK
         eventList = padded
-            ? getPaddedList(data["schedule"])
-            : getList(data["schedule"]);
+            ? getPaddedList(jsonDecode(data.jsonString)["schedule"])
+            : getList(jsonDecode(data.jsonString)["schedule"]);
       }
     } else {
       eventList = await webFetch(scheduleId, padded);
@@ -146,9 +141,9 @@ class ScheduleApi {
           if (days[i.toString()] != null) {
             if (days[i.toString()][0].containsKey("dayName") &&
                 days[i.toString()][0]["dayName"] == "Monday") {
-              days[i.toString()][0]["weekNumber"] =
-                  getWeekNumber(DateTime(int.parse(year), monthMap[month]!, i))
-                      .toString();
+              days[i.toString()][0]["weekNumber"] = WeekUtils.getWeekNumber(
+                      DateTime(int.parse(year), monthMap[month]!, i))
+                  .toString();
             }
 
             temp.addAll(days[i.toString()]);
@@ -157,9 +152,9 @@ class ScheduleApi {
               "date": i.toString() + "/" + monthMap[month].toString(),
               "dayName": DateFormat("EEEE")
                   .format(DateTime(int.parse(year), monthMap[month]!, i)),
-              "weekNumber":
-                  getWeekNumber(DateTime(int.parse(year), monthMap[month]!, i))
-                      .toString()
+              "weekNumber": WeekUtils.getWeekNumber(
+                      DateTime(int.parse(year), monthMap[month]!, i))
+                  .toString()
             });
             temp.add(null);
           }
@@ -187,7 +182,6 @@ class ScheduleApi {
 
   static Future<List> webFetch(String scheduleId, bool padded) async {
     Response response = await BackendProvider.getFullSchedule(scheduleId);
-
     if (response.statusCode == 200) {
       Map data = jsonDecode(utf8.decode(response.bodyBytes));
       Map years = data["schedule"];
@@ -202,25 +196,6 @@ class ScheduleApi {
     }
   }
 
-  static getWeeksInYear(int year) {
-    DateTime dec28 = DateTime(year, 12, 28);
-    int dayOfDec28 = int.parse(DateFormat("D").format(dec28));
-    return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
-  }
-
-  static int getWeekNumber(DateTime date) {
-    int dayOfYear = int.parse(DateFormat("D").format(date));
-    int weekOfYear = ((dayOfYear - date.weekday + 10) / 7).floor();
-
-    if (weekOfYear < 1) {
-      weekOfYear = getWeeksInYear(date.year - 1);
-    } else if (weekOfYear > getWeeksInYear(date.year)) {
-      weekOfYear = 1;
-    }
-
-    return weekOfYear;
-  }
-
   static isExamCard(String cardTitle) {
     return cardTitle.toLowerCase().contains("exam") ||
         cardTitle.toLowerCase().contains("tenta");
@@ -228,6 +203,7 @@ class ScheduleApi {
 
   static bool isFavorite(String scheduleId) {
     // We can store a state somewhere that we can hopefully just update as the "current schedule" which we can then check against the saved favorite
+
     return localStorageService.getScheduleFavorite() == scheduleId;
   }
 

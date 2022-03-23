@@ -4,18 +4,15 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tumble/models/schedule.dart';
-import 'package:tumble/models/tableModel.dart';
+import 'package:tumble/models/scheduleModel.dart';
 import 'package:tumble/resources/database/interface/schedule_interface.dart';
 import 'package:path/path.dart';
 import '../../../models/schedule.dart';
 
-class HiveMethods implements ScheduleInterface {
+class ScheduleMethods implements ScheduleInterface {
   Database? _db;
-
-  String databaseName = "ScheduleDb";
-
-  String tableName = "Call_Schedules";
-
+  String databaseName = "AppDb";
+  String scheduleTable = "Schedules";
   String id = "schedule_id";
   String jsonString = "json_string";
   String cachedAt = "cached_at";
@@ -44,15 +41,16 @@ class HiveMethods implements ScheduleInterface {
   /* Create new table for databasse */
   _onCreateSchedule(Database db, int version) async {
     String createTableQuery =
-        "CREATE TABLE $tableName ($id TEXT PRIMARY KEY, $jsonString TEXT, $cachedAt TEXT)";
+        "CREATE TABLE $scheduleTable ($id TEXT PRIMARY KEY, $jsonString TEXT, $cachedAt TEXT)";
     await db.execute(createTableQuery);
   }
 
   @override
-  addSchedules(TableEntry tableRow) async {
-    final tableEntry = tableRow;
+  addScheduleEntry(ScheduleDTO scheduleDTO) async {
+    // ignore: non_constant_identifier_names
+    final ScheduleDTO = scheduleDTO;
     var dbClient = await db;
-    await dbClient?.insert(tableName, tableEntry.toMap(tableEntry));
+    await dbClient?.insert(scheduleTable, ScheduleDTO.toMap(ScheduleDTO));
   }
 
   @override
@@ -63,7 +61,7 @@ class HiveMethods implements ScheduleInterface {
     try {
       var dbClient = await db;
       int? rowsAffected = await dbClient
-          ?.delete(tableName, where: "$id = ?", whereArgs: [scheduleId]);
+          ?.delete(scheduleTable, where: "$id = ?", whereArgs: [scheduleId]);
       return rowsAffected != null && rowsAffected != 0;
     } catch (e) {
       return false;
@@ -71,22 +69,22 @@ class HiveMethods implements ScheduleInterface {
   }
 
   @override
-  Future<List<Object>?> getAllSchedules() async {
+  Future<List<ScheduleDTO>?> getAllScheduleEntries() async {
     try {
       var dbClient = await db;
 
       List<Map<String, dynamic>>? maps = await dbClient?.query(
-        tableName,
+        scheduleTable,
         columns: [
           id,
           jsonString,
         ],
       );
-      List<Object> elementList = [];
+      List<ScheduleDTO> elementList = [];
       /* Gets all schedules from database */
       if (maps!.isNotEmpty) {
         for (Map map in maps) {
-          elementList.add(map);
+          elementList.add(map as ScheduleDTO);
         }
       }
       return elementList;
@@ -96,38 +94,25 @@ class HiveMethods implements ScheduleInterface {
   }
 
   @override
-  Future<dynamic> getSchedule(String scheduleId) async {
-    try {
-      var dbClient = await db;
-
-      List<Map<String, dynamic>>? maps = await dbClient?.query(tableName,
-          columns: [id, jsonString, cachedAt],
-          where: '$id = ?',
-          whereArgs: [scheduleId]);
-
-      if (maps!.isNotEmpty) {
-        return jsonDecode(maps[0][jsonString]);
-      }
-      return null;
-    } catch (e) {
-      return null;
-    }
+  Future<DateTime?> getScheduleCachedTime(String scheduleId) async {
+    ScheduleDTO? scheduleDTO = await getScheduleEntry(scheduleId);
+    if (scheduleDTO == null) return null;
+    return DateTime.parse(scheduleDTO.cachedAt!);
   }
 
   @override
-  Future<DateTime?> getScheduleCachedTime(String scheduleId) async {
+  Future<ScheduleDTO?> getScheduleEntry(scheduleId) async {
     try {
       var dbClient = await db;
-
-      List<Map<String, dynamic>>? maps = await dbClient?.query(tableName,
+      List<Map<String, dynamic>>? maps = await dbClient?.query(scheduleTable,
           columns: [id, jsonString, cachedAt],
           where: '$id = ?',
           whereArgs: [scheduleId]);
-      if (maps!.isNotEmpty) {
-        return DateTime.parse(maps[0][cachedAt]);
-      }
-      return null;
-    } on FormatException {
+      return ScheduleDTO(
+          jsonString: maps?[0][jsonString],
+          scheduleId: scheduleId,
+          cachedAt: maps?[0][cachedAt]);
+    } catch (e) {
       return null;
     }
   }

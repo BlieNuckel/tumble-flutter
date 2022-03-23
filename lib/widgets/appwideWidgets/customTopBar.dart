@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:tumble/models/schedule.dart';
-import 'package:tumble/models/tableModel.dart';
+import 'package:tumble/models/scheduleModel.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/resources/database/repository/schedule_repository.dart';
 import 'package:tumble/pages/selectorViews/search.dart';

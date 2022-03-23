@@ -1,14 +1,14 @@
 import '../../../models/schedule.dart';
-import '../../../models/tableModel.dart';
+import '../../../models/scheduleModel.dart';
 
 abstract class ScheduleInterface {
   init();
 
-  addSchedules(TableEntry tableRow);
+  addScheduleEntry(ScheduleDTO tableRow);
 
-  Future<List<Object>?> getAllSchedules();
+  Future<List<ScheduleDTO>?> getAllScheduleEntries();
 
-  Future<dynamic> getSchedule(String scheduleId);
+  Future<ScheduleDTO?> getScheduleEntry(String scheduleId);
 
   deleteSchedules(String scheduleId);
 
