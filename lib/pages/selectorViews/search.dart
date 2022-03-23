@@ -33,8 +33,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
       _loading = true;
       _searched = true;
     });
-    List<Program> programsTemp =
-        await ProgramSearchAPI.getProgramList(searchQuery);
+    List<Program> programsTemp = await ProgramSearchAPI.getProgramList(searchQuery);
     setState(() {
       _programList = programsTemp;
       _loading = false;
@@ -47,8 +46,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
       extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
-        margin:
-            EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 30),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 30),
         alignment: Alignment.center,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -100,9 +98,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => HomePage(
-                                                currentScheduleId:
-                                                    program.programId)));
+                                            builder: (context) => HomePage(currentScheduleId: program.programId)));
                                   }),
                               Divider(
                                 indent: 20,
@@ -121,9 +117,7 @@ class _ScheduleSearchPageState extends State<ScheduleSearchPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => HomePage(
-                                          currentScheduleId:
-                                              program.programId)));
+                                      builder: (context) => HomePage(currentScheduleId: program.programId)));
                             });
                       }),
                     );
