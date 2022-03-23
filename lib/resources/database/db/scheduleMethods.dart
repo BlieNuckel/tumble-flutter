@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tumble/models/schedule.dart';
-import 'package:tumble/models/scheduleModel.dart';
+import 'package:tumble/models/schedule_dto.dart';
 import 'package:tumble/resources/database/interface/schedule_interface.dart';
 import 'package:path/path.dart';
 import '../../../models/schedule.dart';
@@ -50,7 +50,7 @@ class ScheduleMethods implements ScheduleInterface {
     // ignore: non_constant_identifier_names
     final ScheduleDTO = scheduleDTO;
     var dbClient = await db;
-    await dbClient?.insert(scheduleTable, ScheduleDTO.toMap(ScheduleDTO));
+    await dbClient?.insert(scheduleTable, ScheduleDTO.toMap());
   }
 
   @override
@@ -72,7 +72,6 @@ class ScheduleMethods implements ScheduleInterface {
   Future<List<ScheduleDTO>?> getAllScheduleEntries() async {
     try {
       var dbClient = await db;
-
       List<Map<String, dynamic>>? maps = await dbClient?.query(
         scheduleTable,
         columns: [
@@ -115,5 +114,11 @@ class ScheduleMethods implements ScheduleInterface {
     } catch (e) {
       return null;
     }
+  }
+
+  @override
+  Future<int?> deleteAllSchedules() async {
+    var dbClient = await db;
+    return await dbClient?.delete(scheduleTable);
   }
 }

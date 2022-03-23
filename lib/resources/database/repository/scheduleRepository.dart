@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:tumble/models/scheduleModel.dart';
-import 'package:tumble/resources/database/db/sqflite_methods.dart';
-import '../../../models/schedule.dart';
+import 'package:tumble/models/schedule_dto.dart';
+import 'package:tumble/resources/database/db/scheduleMethods.dart';
 
 class ScheduleRepository {
   static var dbObject;
@@ -26,4 +24,6 @@ class ScheduleRepository {
       dbObject.getScheduleCachedTime(scheduleId);
 
   static close() => dbObject.close();
+
+  static deleteAllSchedules() => dbObject.deleteAllSchedules();
 }

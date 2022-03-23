@@ -1,12 +1,13 @@
 import 'package:tumble/models/school.dart';
+import 'package:tumble/models/user_preference_dto.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
-import 'package:tumble/service_locator.dart';
+import 'package:tumble/resources/database/repository/preferenceRepository.dart';
+import 'package:tumble/resources/database/repository/scheduleRepository.dart';
 import 'package:tumble/util/school_enum.dart';
 
 import '../resources/database/db/localStorageAPI.dart';
 
 class SchoolSelectorProvider {
-  static final _localStorageService = locator<LocalStorageService>();
   static final schools = [
     School(
       schoolId: SchoolEnum.hkr,
@@ -56,22 +57,26 @@ class SchoolSelectorProvider {
   ];
 
   static bool schoolSelected() {
-    return _localStorageService.getSchoolDefault() != "" &&
-        _localStorageService.getSchoolDefault() != "null";
+    // Read preference default school
+    return getDefaultSchool() != null;
   }
 
   static void setDefaultSchool(SchoolEnum school) {
+    // Set preference default school
     if (getDefaultSchool() != null && school != getDefaultSchool()) {
-      ScheduleApi.setFavorite("");
+      ScheduleRepository.deleteAllSchedules();
     }
-
-    _localStorageService.setSchoolDefault(school);
+    PreferenceRepository.updatePreferences(
+        PreferenceDTO(defaultSchool: school.toString()));
   }
 
-  static SchoolEnum? getDefaultSchool() {
-    String defaultSchool = _localStorageService.getSchoolDefault();
+  static Future<SchoolEnum?> getDefaultSchool() async {
+    PreferenceDTO? preferenceDTO = await PreferenceRepository.getPreferences();
+    String? defaultSchool = preferenceDTO?.defaultSchool;
 
-    if (defaultSchool == "" || defaultSchool == "null") {
+    if (defaultSchool == "" ||
+        defaultSchool == "null" ||
+        defaultSchool == null) {
       return null;
     }
 

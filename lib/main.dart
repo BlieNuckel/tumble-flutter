@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/resources/database/db/localStorageAPI.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
-import 'package:tumble/resources/database/repository/schedule_repository.dart';
-import 'package:tumble/service_locator.dart';
+import 'package:tumble/resources/database/repository/preferenceRepository.dart';
+import 'package:tumble/resources/database/repository/scheduleRepository.dart';
 import 'package:tumble/pages/scheduleViews/home.dart';
 import 'package:tumble/theme/colors.dart';
 import 'package:tumble/pages/selectorViews/schoolSelectionPage.dart';
@@ -13,7 +13,8 @@ import 'package:tumble/pages/selectorViews/search.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   ScheduleRepository.init();
-  setup().then((value) => runApp(const MyApp()));
+  PreferenceRepository.init();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -46,7 +47,8 @@ class MyApp extends StatelessWidget {
               if (ScheduleApi.hasFavorite()) {
                 return HomePage(
                   currentScheduleId:
-                      locator<LocalStorageService>().getScheduleFavorite(),
+                      //
+                      ScheduleRepository.getAllScheduleEntries()[0],
                 );
               } else {
                 return const ScheduleSearchPage();

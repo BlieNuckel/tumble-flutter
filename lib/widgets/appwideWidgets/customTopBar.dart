@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:tumble/models/schedule.dart';
-import 'package:tumble/models/scheduleModel.dart';
+import 'package:tumble/models/schedule_dto.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
-import 'package:tumble/resources/database/repository/schedule_repository.dart';
+import 'package:tumble/resources/database/repository/scheduleRepository.dart';
 import 'package:tumble/pages/selectorViews/search.dart';
 import 'package:tumble/pages/utilViews/settingsPage.dart';
 
@@ -117,10 +117,8 @@ class _FavoriteButtonState extends State<FavoriteButton> {
             iconSize: 30,
             onPressed: () {
               if (ScheduleApi.isFavorite(widget.currentScheduleId)) {
-                ScheduleApi.setFavorite('');
                 ScheduleRepository.deleteSchedules(widget.currentScheduleId);
               } else {
-                ScheduleApi.setFavorite(widget.currentScheduleId);
                 ScheduleApi.saveCurrScheduleToDb(widget.currentScheduleId);
               }
 

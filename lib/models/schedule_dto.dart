@@ -6,7 +6,7 @@ class ScheduleDTO {
 
   ScheduleDTO({required this.jsonString, required this.scheduleId, cachedAt});
 
-  Map<String, dynamic> toMap(ScheduleDTO tableRow) {
+  Map<String, dynamic> toMap() {
     Map<String, dynamic> tableMap = {};
     tableMap["json_string"] = jsonString;
     tableMap["schedule_id"] = scheduleId;

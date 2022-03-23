@@ -10,7 +10,7 @@ class BackendProvider {
     var uri = Uri.https(
         'kronox-app-backend.herokuapp.com',
         '/schedules/' + scheduleId,
-        {'school': SchoolSelectorProvider.getDefaultSchool()!.name});
+        {'school': (await SchoolSelectorProvider.getDefaultSchool())!.name});
     // var uri = Uri.https('10.0.2.2:8000', '/schedules/' + scheduleId, {'school': 'mau'});
 
     try {
@@ -21,10 +21,10 @@ class BackendProvider {
   }
 
   static Future<Response> getSearchResults(String searchQuery) async {
-    var uri = Uri.https(
-        'kronox-app-backend.herokuapp.com', '/schedules/search/', {
+    var uri =
+        Uri.https('kronox-app-backend.herokuapp.com', '/schedules/search/', {
       'search': searchQuery,
-      'school': SchoolSelectorProvider.getDefaultSchool()!.name
+      'school': (await SchoolSelectorProvider.getDefaultSchool())!.name
     });
     // Uri.https('10.0.2.2:8000', '/schedules/search/', {'search': searchQuery, 'school': 'mau'});
 

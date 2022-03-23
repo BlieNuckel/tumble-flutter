@@ -1,5 +1,5 @@
 import '../../../models/schedule.dart';
-import '../../../models/scheduleModel.dart';
+import '../../../models/schedule_dto.dart';
 
 abstract class ScheduleInterface {
   init();
@@ -13,6 +13,8 @@ abstract class ScheduleInterface {
   deleteSchedules(String scheduleId);
 
   getScheduleCachedTime(String scheduleId);
+
+  Future<int?> deleteAllSchedules();
 
   close();
 }

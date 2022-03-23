@@ -1,13 +1,15 @@
-import 'package:tumble/models/userPreferenceModel.dart';
+import 'package:tumble/models/user_preference_dto.dart';
 
 abstract class PreferenceInterface {
   init();
 
-  addPreferences(PreferenceEntry preferenceEntry);
+  addPreferences(PreferenceDTO preferenceEntry);
 
-  Future<PreferenceEntry?> getPreferences(String preferenceId);
+  Future<PreferenceDTO?> getPreferences();
 
   deletePreferences(String preferenceId);
+
+  updatePreferences(PreferenceDTO newPreferenceDTO);
 
   close();
 }

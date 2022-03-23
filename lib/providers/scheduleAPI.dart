@@ -8,15 +8,12 @@ import 'package:tumble/models/dayDivider.dart';
 import 'package:tumble/models/week.dart';
 import 'package:tumble/providers/backendProvider.dart';
 import 'package:tumble/resources/database/db/localStorageAPI.dart';
-import 'package:tumble/service_locator.dart';
 import 'package:tumble/util/weekUtils.dart';
 
-import '../models/scheduleModel.dart';
-import '../resources/database/repository/schedule_repository.dart';
+import '../models/schedule_dto.dart';
+import '../resources/database/repository/scheduleRepository.dart';
 
 class ScheduleApi {
-  static final localStorageService = locator<LocalStorageService>();
-
   static final Map<String, int> monthMap = {
     'january': 1,
     'february': 2,
@@ -202,9 +199,14 @@ class ScheduleApi {
   }
 
   static bool isFavorite(String scheduleId) {
-    // We can store a state somewhere that we can hopefully just update as the "current schedule" which we can then check against the saved favorite
-
-    return localStorageService.getScheduleFavorite() == scheduleId;
+    // We can store a state somewhere that we can hopefully just update as the
+    // "current schedule" which we can then check against the saved favorite
+    for (ScheduleDTO schedule in ScheduleRepository.getAllScheduleEntries()) {
+      if (schedule.scheduleId == scheduleId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   static bool isStarred() {
@@ -212,11 +214,7 @@ class ScheduleApi {
   }
 
   static hasFavorite() {
-    return localStorageService.getScheduleFavorite() != "" &&
-        localStorageService.getScheduleFavorite() != "null";
-  }
-
-  static setFavorite(String scheduleId) {
-    localStorageService.setScheduleFavorite(scheduleId);
+    List<ScheduleDTO> temp = ScheduleRepository.getAllScheduleEntries();
+    return temp.isEmpty;
   }
 }
