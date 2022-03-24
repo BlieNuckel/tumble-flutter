@@ -6,19 +6,15 @@ class PreferenceRepository {
 
   static init() {
     dbObject = PreferenceMethods();
-    dbObject.init();
   }
 
-  static addPreferences(PreferenceDTO preferenceEntry) =>
-      dbObject.addPreferences(preferenceEntry);
+  static addPreferences(PreferenceDTO preferenceEntry) => dbObject.addPreferences(preferenceEntry);
 
-  static deletePreferences(String preferenceEntry) =>
-      dbObject.deletePreferences(preferenceEntry);
+  static deletePreferences(String preferenceEntry) => dbObject.deletePreferences(preferenceEntry);
 
   static Future<PreferenceDTO?> getPreferences() => dbObject.getPreferences();
 
-  static updatePreferences(PreferenceDTO newPreferenceDTO) =>
-      dbObject.updatePreferences(newPreferenceDTO);
+  static updatePreferences(PreferenceDTO newPreferenceDTO) => dbObject.updatePreferences(newPreferenceDTO);
 
   static close() => dbObject.close();
 }

@@ -31,6 +31,7 @@ class PreferenceMethods implements PreferenceInterface {
       version: 1,
       onCreate: _onCreateSchedule,
     );
+    print("DONE WITH PREFERENCE INIT");
     return db;
   }
 
@@ -50,17 +51,18 @@ class PreferenceMethods implements PreferenceInterface {
   @override
   updatePreferences(PreferenceDTO newPreferenceDTO) async {
     Map<String, dynamic>? oldPreferencesMap = (await fetchEntry())?.toMap();
+    oldPreferencesMap ??= PreferenceDTO().toMap();
     Map? newPreferencesMap = newPreferenceDTO.toMap();
     for (MapEntry element in newPreferencesMap.entries) {
       if (element.value != null) {
-        oldPreferencesMap?[element.key] = element.value;
+        oldPreferencesMap[element.key] = element.value;
       }
     }
     try {
       var dbClient = await db;
       dbClient?.update(
         preferenceTable,
-        oldPreferencesMap!,
+        oldPreferencesMap,
         where: '$id = $id',
       );
     } on FormatException {
@@ -82,12 +84,10 @@ class PreferenceMethods implements PreferenceInterface {
   Future<PreferenceDTO?> fetchEntry() async {
     try {
       var dbClient = await db;
-      List<Map<String, dynamic>>? maps = await dbClient?.query(preferenceTable,
-          columns: [id, viewType, theme, defaultSchool], where: '$id = $id');
+      List<Map<String, dynamic>>? maps =
+          await dbClient?.query(preferenceTable, columns: [id, viewType, theme, defaultSchool], where: '$id = $id');
       return PreferenceDTO(
-          viewType: maps?[0][viewType],
-          theme: maps?[0][theme],
-          defaultSchool: maps?[0][defaultSchool]);
+          viewType: maps?[0][viewType], theme: maps?[0][theme], defaultSchool: maps?[0][defaultSchool]);
     } catch (e) {
       return null;
     }

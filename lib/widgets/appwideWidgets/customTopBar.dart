@@ -11,8 +11,7 @@ import 'package:tumble/pages/utilViews/settingsPage.dart';
 class CustomTopBar extends StatefulWidget {
   final String currentScheduleId;
 
-  const CustomTopBar({Key? key, required this.currentScheduleId})
-      : super(key: key);
+  const CustomTopBar({Key? key, required this.currentScheduleId}) : super(key: key);
 
   @override
   State<CustomTopBar> createState() => CustomTopBarState();
@@ -50,10 +49,7 @@ class CustomTopBarState extends State<CustomTopBar> {
                             iconSize: 32,
                             onPressed: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ScheduleSearchPage()));
+                                  context, MaterialPageRoute(builder: (context) => const ScheduleSearchPage()));
                             },
                             splashRadius: 20,
                             enableFeedback: true,
@@ -64,11 +60,7 @@ class CustomTopBarState extends State<CustomTopBar> {
                             icon: const Icon(Icons.settings_outlined),
                             iconSize: 32,
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: ((context) =>
-                                          const SettingsPage())));
+                              Navigator.push(context, MaterialPageRoute(builder: ((context) => SettingsPage())));
                             },
                             splashRadius: 20,
                             enableFeedback: true,
@@ -93,8 +85,7 @@ class CustomTopBarState extends State<CustomTopBar> {
 class FavoriteButton extends StatefulWidget {
   final String currentScheduleId;
 
-  const FavoriteButton({Key? key, required this.currentScheduleId})
-      : super(key: key);
+  const FavoriteButton({Key? key, required this.currentScheduleId}) : super(key: key);
 
   @override
   State<FavoriteButton> createState() => _FavoriteButtonState();
@@ -103,33 +94,43 @@ class FavoriteButton extends StatefulWidget {
 class _FavoriteButtonState extends State<FavoriteButton> {
   late bool _favorited;
 
+  Future<bool> initFavorited() async {
+    _favorited = await ScheduleApi.isFavorite(widget.currentScheduleId);
+    return _favorited;
+  }
+
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      _favorited = ScheduleApi.isFavorite(widget.currentScheduleId);
-    });
     return Material(
         color: Colors.transparent,
-        child: IconButton(
-            icon: _favorited
-                ? const Icon(Icons.favorite)
-                : const Icon(Icons.favorite_outline),
-            iconSize: 30,
-            onPressed: () {
-              if (ScheduleApi.isFavorite(widget.currentScheduleId)) {
-                ScheduleRepository.deleteSchedules(widget.currentScheduleId);
-              } else {
-                ScheduleApi.saveCurrScheduleToDb(widget.currentScheduleId);
-              }
+        child: FutureBuilder(
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return IconButton(
+                  icon: _favorited ? const Icon(Icons.favorite) : const Icon(Icons.favorite_outline),
+                  iconSize: 30,
+                  onPressed: () async {
+                    if (await ScheduleApi.isFavorite(widget.currentScheduleId)) {
+                      ScheduleRepository.deleteSchedules(widget.currentScheduleId);
+                    } else {
+                      ScheduleApi.saveCurrScheduleToDb(widget.currentScheduleId);
+                    }
 
-              setState(() {
-                _favorited = ScheduleApi.isFavorite(widget.currentScheduleId);
-              });
-            },
-            splashRadius: 20,
-            enableFeedback: true,
-            color: _favorited
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.onBackground));
+                    setState(() async {
+                      _favorited = await ScheduleApi.isFavorite(widget.currentScheduleId);
+                    });
+                  },
+                  splashRadius: 20,
+                  enableFeedback: true,
+                  color:
+                      _favorited ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onBackground);
+            }
+
+            return Container(
+              color: Theme.of(context).colorScheme.background,
+            );
+          }),
+          future: initFavorited(),
+        ));
   }
 }

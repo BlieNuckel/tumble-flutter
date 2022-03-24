@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tumble/models/schedule_dto.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/resources/database/db/localStorageAPI.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
@@ -12,13 +13,25 @@ import 'package:tumble/pages/selectorViews/search.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  ScheduleRepository.init();
-  PreferenceRepository.init();
-  runApp(const MyApp());
+  await ScheduleRepository.init();
+  await PreferenceRepository.init();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  late List<ScheduleDTO> _allSchedules;
+  late bool _hasFavorite;
+  late bool _schoolSelected;
+
+  Future<bool> setupAsyncVars() async {
+    _allSchedules = (await ScheduleRepository.getAllScheduleEntries())!;
+    _schoolSelected = await SchoolSelectorProvider.schoolSelected();
+    _hasFavorite = await ScheduleApi.hasFavorite();
+    return _hasFavorite;
+  }
+
   @override
   Widget build(BuildContext context) {
     final Brightness brighness = MediaQuery.platformBrightnessOf(context);
@@ -40,23 +53,31 @@ class MyApp extends StatelessWidget {
         home: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
-              statusBarIconBrightness:
-                  isDarkMode ? Brightness.light : Brightness.dark),
-          child: () {
-            if (SchoolSelectorProvider.schoolSelected()) {
-              if (ScheduleApi.hasFavorite()) {
-                return HomePage(
-                  currentScheduleId:
-                      //
-                      ScheduleRepository.getAllScheduleEntries()[0],
-                );
-              } else {
-                return const ScheduleSearchPage();
+              statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark),
+          child: FutureBuilder(
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (_schoolSelected) {
+                  if (_hasFavorite) {
+                    return HomePage(
+                      currentScheduleId:
+                          //
+                          _allSchedules[0].scheduleId,
+                    );
+                  } else {
+                    return const ScheduleSearchPage();
+                  }
+                } else {
+                  return SchoolSelectionPage();
+                }
               }
-            } else {
-              return SchoolSelectionPage();
-            }
-          }(),
+
+              return Container(
+                color: Theme.of(context).colorScheme.background,
+              );
+            },
+            future: setupAsyncVars(),
+          ),
         ));
   }
 }

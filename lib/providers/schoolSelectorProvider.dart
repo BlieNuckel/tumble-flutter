@@ -56,27 +56,24 @@ class SchoolSelectorProvider {
     ),
   ];
 
-  static bool schoolSelected() {
+  static Future<bool> schoolSelected() async {
     // Read preference default school
-    return getDefaultSchool() != null;
+    return await getDefaultSchool() != null;
   }
 
-  static void setDefaultSchool(SchoolEnum school) {
+  static void setDefaultSchool(SchoolEnum school) async {
     // Set preference default school
-    if (getDefaultSchool() != null && school != getDefaultSchool()) {
+    if (await getDefaultSchool() != null && school != await getDefaultSchool()) {
       ScheduleRepository.deleteAllSchedules();
     }
-    PreferenceRepository.updatePreferences(
-        PreferenceDTO(defaultSchool: school.toString()));
+    PreferenceRepository.updatePreferences(PreferenceDTO(defaultSchool: school.toString()));
   }
 
   static Future<SchoolEnum?> getDefaultSchool() async {
     PreferenceDTO? preferenceDTO = await PreferenceRepository.getPreferences();
     String? defaultSchool = preferenceDTO?.defaultSchool;
 
-    if (defaultSchool == "" ||
-        defaultSchool == "null" ||
-        defaultSchool == null) {
+    if (defaultSchool == "" || defaultSchool == "null" || defaultSchool == null) {
       return null;
     }
 

@@ -6,24 +6,19 @@ class ScheduleRepository {
 
   static init() {
     dbObject = ScheduleMethods();
-    dbObject.init();
   }
 
-  static addScheduleEntry(ScheduleDTO tableEntry) =>
-      dbObject.addSchedules(tableEntry);
+  static addScheduleEntry(ScheduleDTO tableEntry) => dbObject.addSchedules(tableEntry);
 
-  static deleteSchedules(String scheduleId) =>
-      dbObject.deleteSchedules(scheduleId);
+  static Future<bool> deleteSchedules(String scheduleId) => dbObject.deleteSchedules(scheduleId);
 
-  static getAllScheduleEntries() => dbObject.getAllScheduleEntries();
+  static Future<List<ScheduleDTO>?> getAllScheduleEntries() => dbObject.getAllScheduleEntries();
 
-  static getScheduleEntry(String scheduleId) =>
-      dbObject.getScheduleEntry(scheduleId);
+  static Future<ScheduleDTO?> getScheduleEntry(String scheduleId) => dbObject.getScheduleEntry(scheduleId);
 
-  static getScheduleCachedTime(String scheduleId) =>
-      dbObject.getScheduleCachedTime(scheduleId);
+  static Future<DateTime?> getScheduleCachedTime(String scheduleId) => dbObject.getScheduleCachedTime(scheduleId);
 
   static close() => dbObject.close();
 
-  static deleteAllSchedules() => dbObject.deleteAllSchedules();
+  static Future<int?> deleteAllSchedules() => dbObject.deleteAllSchedules();
 }
