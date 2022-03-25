@@ -1,56 +1,33 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:tumble/models/user_preference_dto.dart';
 import 'package:tumble/resources/database/interface/preferenceInterface.dart';
 
+import '../../../models/schedule_dto.dart';
+import 'db_init.dart';
+
 class PreferenceMethods implements PreferenceInterface {
-  Database? _db;
-  String databaseName = "AppDb";
-  String preferenceTable = "Preferences";
-  String viewType = "view_type";
-  String theme = "theme";
-  String defaultSchool = "default_school";
-  String id = "preference_id";
-
-  Future<Database?> get db async {
-    if (_db != null) {
-      return _db;
-    }
-    _db = await init();
-    return _db;
-  }
+  String preferenceTable = DbInit.preferenceTable;
+  String viewType = DbInit.viewType;
+  String theme = DbInit.theme;
+  String defaultSchool = DbInit.defaultSchool;
+  String preferenceId = DbInit.preferenceId;
 
   @override
-  init() async {
-    Directory dir = await getApplicationDocumentsDirectory();
-    String path = join(dir.path, databaseName);
-    var db = await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreateSchedule,
-    );
-    print("DONE WITH PREFERENCE INIT");
-    return db;
-  }
-
-  /* Create new table for databasse */
-  _onCreateSchedule(Database db, int version) async {
-    String createTableQuery =
-        "CREATE TABLE $preferenceTable ($id TEXT PRIMARY KEY, $viewType TEXT, $theme TEXT, $defaultSchool TEXT)";
-    await db.execute(createTableQuery);
-  }
-
-  @override
-  addPreferences(PreferenceDTO preferenceEntry) {
-    // TODO: implement addPreference
-    throw UnimplementedError();
+  addPreferences(PreferenceDTO preferenceEntry) async {
+    var dbClient = await DbInit.db;
+    await dbClient?.insert(preferenceTable, preferenceEntry.toMap());
   }
 
   @override
   updatePreferences(PreferenceDTO newPreferenceDTO) async {
     Map<String, dynamic>? oldPreferencesMap = (await fetchEntry())?.toMap();
+    if (oldPreferencesMap == null) {
+      await addPreferences(PreferenceDTO());
+    }
     oldPreferencesMap ??= PreferenceDTO().toMap();
     Map? newPreferencesMap = newPreferenceDTO.toMap();
     for (MapEntry element in newPreferencesMap.entries) {
@@ -59,13 +36,14 @@ class PreferenceMethods implements PreferenceInterface {
       }
     }
     try {
-      var dbClient = await db;
+      var dbClient = await DbInit.db;
       dbClient?.update(
         preferenceTable,
         oldPreferencesMap,
-        where: '$id = $id',
+        where: '$preferenceId = $preferenceId',
       );
-    } on FormatException {
+    } on FormatException catch (e) {
+      print(e);
       return null;
     }
   }
@@ -83,12 +61,19 @@ class PreferenceMethods implements PreferenceInterface {
 
   Future<PreferenceDTO?> fetchEntry() async {
     try {
-      var dbClient = await db;
-      List<Map<String, dynamic>>? maps =
-          await dbClient?.query(preferenceTable, columns: [id, viewType, theme, defaultSchool], where: '$id = $id');
+      var dbClient = await DbInit.db;
+      List<Map<String, dynamic>>? maps = await dbClient?.query(preferenceTable,
+          columns: [preferenceId, viewType, theme, defaultSchool],
+          where: '$preferenceId = $preferenceId');
+      print(await dbClient?.query(preferenceTable,
+          columns: [preferenceId, viewType, theme, defaultSchool],
+          where: '$preferenceId = $preferenceId'));
       return PreferenceDTO(
-          viewType: maps?[0][viewType], theme: maps?[0][theme], defaultSchool: maps?[0][defaultSchool]);
+          viewType: maps?[0][viewType],
+          theme: maps?[0][theme],
+          defaultSchool: maps?[0][defaultSchool]);
     } catch (e) {
+      print(e);
       return null;
     }
   }

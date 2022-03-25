@@ -5,52 +5,22 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tumble/models/schedule.dart';
 import 'package:tumble/models/schedule_dto.dart';
+import 'package:tumble/resources/database/db/db_init.dart';
 import 'package:tumble/resources/database/interface/schedule_interface.dart';
 import 'package:path/path.dart';
 import '../../../models/schedule.dart';
 
 class ScheduleMethods implements ScheduleInterface {
-  Database? _db;
-  String databaseName = "AppDb";
-  String scheduleTable = "Schedules";
-  String id = "schedule_id";
-  String jsonString = "json_string";
-  String cachedAt = "cached_at";
-
-  Future<Database?> get db async {
-    if (_db != null) {
-      return _db;
-    }
-    _db = await init();
-    return _db;
-  }
-
-  @override
-  init() async {
-    Directory dir = await getApplicationDocumentsDirectory();
-    String path = join(dir.path, databaseName);
-    var db = await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreateSchedule,
-    );
-
-    return db;
-  }
-
-  /* Create new table for databasse */
-  _onCreateSchedule(Database db, int version) async {
-    String createTableQuery =
-        "CREATE TABLE $scheduleTable ($id TEXT PRIMARY KEY, $jsonString TEXT, $cachedAt TEXT)";
-    await db.execute(createTableQuery);
-  }
+  String scheduleTable = DbInit.scheduleTable;
+  String id = DbInit.scheduleId;
+  String jsonString = DbInit.jsonString;
+  String cachedAt = DbInit.cachedAt;
 
   @override
   addScheduleEntry(ScheduleDTO scheduleDTO) async {
     // ignore: non_constant_identifier_names
-    final ScheduleDTO = scheduleDTO;
-    var dbClient = await db;
-    await dbClient?.insert(scheduleTable, ScheduleDTO.toMap());
+    var dbClient = await DbInit.db;
+    await dbClient?.insert(scheduleTable, scheduleDTO.toMap());
   }
 
   @override
@@ -59,7 +29,7 @@ class ScheduleMethods implements ScheduleInterface {
   @override
   Future<bool> deleteSchedules(String scheduleId) async {
     try {
-      var dbClient = await db;
+      var dbClient = await DbInit.db;
       int? rowsAffected = await dbClient
           ?.delete(scheduleTable, where: "$id = ?", whereArgs: [scheduleId]);
       return rowsAffected != null && rowsAffected != 0;
@@ -71,13 +41,10 @@ class ScheduleMethods implements ScheduleInterface {
   @override
   Future<List<ScheduleDTO>?> getAllScheduleEntries() async {
     try {
-      var dbClient = await db;
+      var dbClient = await DbInit.db;
       List<Map<String, dynamic>>? maps = await dbClient?.query(
         scheduleTable,
-        columns: [
-          id,
-          jsonString,
-        ],
+        columns: [id, jsonString, cachedAt],
       );
       List<ScheduleDTO> elementList = [];
       /* Gets all schedules from database */
@@ -102,7 +69,7 @@ class ScheduleMethods implements ScheduleInterface {
   @override
   Future<ScheduleDTO?> getScheduleEntry(scheduleId) async {
     try {
-      var dbClient = await db;
+      var dbClient = await DbInit.db;
       List<Map<String, dynamic>>? maps = await dbClient?.query(scheduleTable,
           columns: [id, jsonString, cachedAt],
           where: '$id = ?',
@@ -118,7 +85,7 @@ class ScheduleMethods implements ScheduleInterface {
 
   @override
   Future<int?> deleteAllSchedules() async {
-    var dbClient = await db;
+    var dbClient = await DbInit.db;
     return await dbClient?.delete(scheduleTable);
   }
 }

@@ -2,8 +2,6 @@ import '../../../models/schedule.dart';
 import '../../../models/schedule_dto.dart';
 
 abstract class ScheduleInterface {
-  init();
-
   addScheduleEntry(ScheduleDTO tableRow);
 
   Future<List<ScheduleDTO>?> getAllScheduleEntries();
@@ -15,6 +13,4 @@ abstract class ScheduleInterface {
   getScheduleCachedTime(String scheduleId);
 
   Future<int?> deleteAllSchedules();
-
-  close();
 }

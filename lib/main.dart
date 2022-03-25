@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tumble/models/schedule_dto.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
+import 'package:tumble/resources/database/db/db_init.dart';
 import 'package:tumble/resources/database/db/localStorageAPI.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
 import 'package:tumble/resources/database/repository/preferenceRepository.dart';
@@ -10,11 +11,11 @@ import 'package:tumble/pages/scheduleViews/home.dart';
 import 'package:tumble/theme/colors.dart';
 import 'package:tumble/pages/selectorViews/schoolSelectionPage.dart';
 import 'package:tumble/pages/selectorViews/search.dart';
+import 'package:tumble/widgets/appwideWidgets/loadingCircle.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ScheduleRepository.init();
-  await PreferenceRepository.init();
+  DbInit.init();
   runApp(MyApp());
 }
 
@@ -25,10 +26,21 @@ class MyApp extends StatelessWidget {
   late bool _hasFavorite;
   late bool _schoolSelected;
 
-  Future<bool> setupAsyncVars() async {
+  Future<List<ScheduleDTO>> setupAllSchedules() async {
     _allSchedules = (await ScheduleRepository.getAllScheduleEntries())!;
+    print("THIS IS SCHEDULES");
+    return _allSchedules;
+  }
+
+  Future<bool> setupShoolSelected() async {
     _schoolSelected = await SchoolSelectorProvider.schoolSelected();
+    print("THIS IS SCHOOL");
+    return _schoolSelected;
+  }
+
+  Future<bool> setupHasFavorite() async {
     _hasFavorite = await ScheduleApi.hasFavorite();
+    print("THIS IS FAVORITE");
     return _hasFavorite;
   }
 
@@ -53,10 +65,11 @@ class MyApp extends StatelessWidget {
         home: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
-              statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark),
+              statusBarIconBrightness:
+                  isDarkMode ? Brightness.light : Brightness.dark),
           child: FutureBuilder(
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
                 if (_schoolSelected) {
                   if (_hasFavorite) {
                     return HomePage(
@@ -64,19 +77,18 @@ class MyApp extends StatelessWidget {
                           //
                           _allSchedules[0].scheduleId,
                     );
-                  } else {
-                    return const ScheduleSearchPage();
                   }
-                } else {
-                  return SchoolSelectionPage();
+                  return const ScheduleSearchPage();
                 }
+                return SchoolSelectionPage();
               }
-
-              return Container(
-                color: Theme.of(context).colorScheme.background,
-              );
+              return const LoadCircle();
             },
-            future: setupAsyncVars(),
+            future: Future.wait([
+              setupAllSchedules(),
+              setupHasFavorite(),
+              setupShoolSelected()
+            ]),
           ),
         ));
   }
