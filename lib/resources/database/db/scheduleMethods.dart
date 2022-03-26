@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
@@ -30,8 +31,7 @@ class ScheduleMethods implements ScheduleInterface {
   Future<bool> deleteSchedules(String scheduleId) async {
     try {
       var dbClient = await DbInit.db;
-      int? rowsAffected = await dbClient
-          ?.delete(scheduleTable, where: "$id = ?", whereArgs: [scheduleId]);
+      int? rowsAffected = await dbClient?.delete(scheduleTable, where: "$id = ?", whereArgs: [scheduleId]);
       return rowsAffected != null && rowsAffected != 0;
     } catch (e) {
       return false;
@@ -50,11 +50,12 @@ class ScheduleMethods implements ScheduleInterface {
       /* Gets all schedules from database */
       if (maps!.isNotEmpty) {
         for (Map map in maps) {
-          elementList.add(map as ScheduleDTO);
+          elementList.add(ScheduleDTO(scheduleId: map[id], jsonString: map[jsonString], cachedAt: map[cachedAt]));
         }
       }
       return elementList;
     } catch (e) {
+      log("Error in getAllScheduleEntries.", error: e);
       return null;
     }
   }
@@ -71,14 +72,10 @@ class ScheduleMethods implements ScheduleInterface {
     try {
       var dbClient = await DbInit.db;
       List<Map<String, dynamic>>? maps = await dbClient?.query(scheduleTable,
-          columns: [id, jsonString, cachedAt],
-          where: '$id = ?',
-          whereArgs: [scheduleId]);
-      return ScheduleDTO(
-          jsonString: maps?[0][jsonString],
-          scheduleId: scheduleId,
-          cachedAt: maps?[0][cachedAt]);
+          columns: [id, jsonString, cachedAt], where: '$id = ?', whereArgs: [scheduleId]);
+      return ScheduleDTO(jsonString: maps?[0][jsonString], scheduleId: scheduleId, cachedAt: maps?[0][cachedAt]);
     } catch (e) {
+      log("Error in getScheduleEntry.", error: e);
       return null;
     }
   }

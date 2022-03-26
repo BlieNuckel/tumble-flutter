@@ -63,23 +63,17 @@ class SchoolSelectorProvider {
 
   static void setDefaultSchool(SchoolEnum school) async {
     // Set preference default school
-    if (await getDefaultSchool() != null &&
-        school != await getDefaultSchool()) {
+    if (await getDefaultSchool() != null && school != await getDefaultSchool()) {
       ScheduleRepository.deleteAllSchedules();
     }
-    PreferenceRepository.updatePreferences(
-        PreferenceDTO(defaultSchool: school.name));
+    PreferenceRepository.updatePreferences(PreferenceDTO(defaultSchool: school.name));
   }
 
   static Future<SchoolEnum?> getDefaultSchool() async {
     PreferenceDTO? preferenceDTO = await PreferenceRepository.getPreferences();
     String? defaultSchool = preferenceDTO?.defaultSchool;
 
-    print(defaultSchool);
-
-    if (defaultSchool == "" ||
-        defaultSchool == "null" ||
-        defaultSchool == null) {
+    if (defaultSchool == "" || defaultSchool == "null" || defaultSchool == null) {
       return null;
     }
 

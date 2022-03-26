@@ -1,12 +1,6 @@
-import 'dart:io';
-import 'dart:math';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'dart:developer';
 import 'package:tumble/models/user_preference_dto.dart';
 import 'package:tumble/resources/database/interface/preferenceInterface.dart';
-
-import '../../../models/schedule_dto.dart';
 import 'db_init.dart';
 
 class PreferenceMethods implements PreferenceInterface {
@@ -63,17 +57,11 @@ class PreferenceMethods implements PreferenceInterface {
     try {
       var dbClient = await DbInit.db;
       List<Map<String, dynamic>>? maps = await dbClient?.query(preferenceTable,
-          columns: [preferenceId, viewType, theme, defaultSchool],
-          where: '$preferenceId = $preferenceId');
-      print(await dbClient?.query(preferenceTable,
-          columns: [preferenceId, viewType, theme, defaultSchool],
-          where: '$preferenceId = $preferenceId'));
+          columns: [preferenceId, viewType, theme, defaultSchool], where: '$preferenceId = $preferenceId');
       return PreferenceDTO(
-          viewType: maps?[0][viewType],
-          theme: maps?[0][theme],
-          defaultSchool: maps?[0][defaultSchool]);
+          viewType: maps?[0][viewType], theme: maps?[0][theme], defaultSchool: maps?[0][defaultSchool]);
     } catch (e) {
-      print(e);
+      log("Error in fetchEntry.", error: e);
       return null;
     }
   }

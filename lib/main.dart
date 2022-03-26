@@ -3,9 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:tumble/models/schedule_dto.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/resources/database/db/db_init.dart';
-import 'package:tumble/resources/database/db/localStorageAPI.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
-import 'package:tumble/resources/database/repository/preferenceRepository.dart';
 import 'package:tumble/resources/database/repository/scheduleRepository.dart';
 import 'package:tumble/pages/scheduleViews/home.dart';
 import 'package:tumble/theme/colors.dart';
@@ -28,19 +26,16 @@ class MyApp extends StatelessWidget {
 
   Future<List<ScheduleDTO>> setupAllSchedules() async {
     _allSchedules = (await ScheduleRepository.getAllScheduleEntries())!;
-    print("THIS IS SCHEDULES");
     return _allSchedules;
   }
 
   Future<bool> setupShoolSelected() async {
     _schoolSelected = await SchoolSelectorProvider.schoolSelected();
-    print("THIS IS SCHOOL");
     return _schoolSelected;
   }
 
   Future<bool> setupHasFavorite() async {
     _hasFavorite = await ScheduleApi.hasFavorite();
-    print("THIS IS FAVORITE");
     return _hasFavorite;
   }
 
@@ -65,8 +60,7 @@ class MyApp extends StatelessWidget {
         home: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
-              statusBarIconBrightness:
-                  isDarkMode ? Brightness.light : Brightness.dark),
+              statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark),
           child: FutureBuilder(
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -84,11 +78,7 @@ class MyApp extends StatelessWidget {
               }
               return const LoadCircle();
             },
-            future: Future.wait([
-              setupAllSchedules(),
-              setupHasFavorite(),
-              setupShoolSelected()
-            ]),
+            future: Future.wait([setupAllSchedules(), setupHasFavorite(), setupShoolSelected()]),
           ),
         ));
   }
