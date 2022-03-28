@@ -32,8 +32,6 @@ dependencies:
     sdk: flutter
   http: ^0.13.1 
 
-  shared_preferences: ^2.0.13
-
   get_it: ^7.2.0
 
   cupertino_icons: ^1.0.2
@@ -46,6 +44,7 @@ dependencies:
 
   flutter_spinkit: ^5.1.0
   path_provider: ^2.0.9
+  provider: ^6.0.2
 
 
 dev_dependencies:

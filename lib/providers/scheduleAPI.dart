@@ -7,7 +7,6 @@ import 'package:tumble/models/schedule.dart';
 import 'package:tumble/models/dayDivider.dart';
 import 'package:tumble/models/week.dart';
 import 'package:tumble/providers/backendProvider.dart';
-import 'package:tumble/resources/database/db/localStorageAPI.dart';
 import 'package:tumble/util/weekUtils.dart';
 
 import '../models/schedule_dto.dart';

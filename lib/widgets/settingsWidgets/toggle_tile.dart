@@ -4,8 +4,10 @@ class ToggleSettingsTile extends StatefulWidget {
   final IconData prefixIcon;
   final String title;
   final Function(bool) onToggle;
+  final bool toggleValue;
 
-  const ToggleSettingsTile({Key? key, required this.prefixIcon, required this.title, required this.onToggle})
+  const ToggleSettingsTile(
+      {Key? key, required this.prefixIcon, required this.title, required this.onToggle, required this.toggleValue})
       : super(key: key);
 
   @override
@@ -13,11 +15,9 @@ class ToggleSettingsTile extends StatefulWidget {
 }
 
 class _ToggleSettingsTileState extends State<ToggleSettingsTile> {
-  late bool _darkMode;
-
   @override
   Widget build(BuildContext context) {
-    _darkMode = Theme.of(context).brightness == Brightness.dark;
+    bool _toggleValue = widget.toggleValue;
 
     return SizedBox(
       width: double.infinity,
@@ -46,11 +46,11 @@ class _ToggleSettingsTileState extends State<ToggleSettingsTile> {
             child: Align(
               alignment: Alignment.centerRight,
               child: Switch(
-                  value: _darkMode,
+                  value: _toggleValue,
                   onChanged: (value) {
                     widget.onToggle(value);
                     setState(() {
-                      _darkMode = !_darkMode;
+                      _toggleValue = !_toggleValue;
                     });
                   }),
             ),

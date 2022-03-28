@@ -1,11 +1,7 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:tumble/models/user_preference_dto.dart';
-import 'package:tumble/resources/database/interface/preferenceInterface.dart';
 
 class DbInit {
   static Database? _db;

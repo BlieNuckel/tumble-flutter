@@ -1,11 +1,8 @@
 import 'package:tumble/models/school.dart';
 import 'package:tumble/models/user_preference_dto.dart';
-import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/resources/database/repository/preferenceRepository.dart';
 import 'package:tumble/resources/database/repository/scheduleRepository.dart';
 import 'package:tumble/util/school_enum.dart';
-
-import '../resources/database/db/localStorageAPI.dart';
 
 class SchoolSelectorProvider {
   static final schools = [
@@ -28,7 +25,7 @@ class SchoolSelectorProvider {
     //   schoolId: SchoolEnum.ltu,
     //   schoolName: 'Luleå University of Technology',
     //   schoolLogo: 'assets/school_logos/ltu_logo.png',
-    // ),
+    // ),~
     School(
       schoolId: SchoolEnum.hig,
       schoolName: 'Högskolan i Gävle',

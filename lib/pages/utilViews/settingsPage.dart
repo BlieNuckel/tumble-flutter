@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tumble/models/user_preference_dto.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
 import 'package:tumble/pages/selectorViews/schoolSelectionPage.dart';
+import 'package:tumble/providers/theme_provider.dart';
 import 'package:tumble/resources/database/repository/preferenceRepository.dart';
+import 'package:tumble/service_locator.dart';
 import 'package:tumble/widgets/settingsWidgets/settingsSection.dart';
 import 'package:tumble/widgets/settingsWidgets/button_tile.dart';
 import 'package:tumble/widgets/settingsWidgets/toggle_tile.dart';
@@ -44,10 +46,8 @@ class SettingsPage extends StatelessWidget {
                       prefixIcon: Icons.swap_horizontal_circle,
                     ),
                     ToggleSettingsTile(
-                      onToggle: (bool value) async {
-                        PreferenceRepository.updatePreferences(
-                            value ? PreferenceDTO(theme: "dark") : PreferenceDTO(theme: "light"));
-                      },
+                      onToggle: locator<ThemeProvider>().toggleTheme,
+                      toggleValue: locator<ThemeProvider>().isDarkMode,
                       title: "Dark Mode",
                       prefixIcon: Icons.dark_mode_outlined,
                     ),

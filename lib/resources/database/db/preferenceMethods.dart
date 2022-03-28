@@ -18,11 +18,7 @@ class PreferenceMethods implements PreferenceInterface {
 
   @override
   updatePreferences(PreferenceDTO newPreferenceDTO) async {
-    Map<String, dynamic>? oldPreferencesMap = (await fetchEntry())?.toMap();
-    if (oldPreferencesMap == null) {
-      await addPreferences(PreferenceDTO());
-    }
-    oldPreferencesMap ??= PreferenceDTO().toMap();
+    Map<String, dynamic> oldPreferencesMap = (await fetchEntry()).toMap();
     Map? newPreferencesMap = newPreferenceDTO.toMap();
     for (MapEntry element in newPreferencesMap.entries) {
       if (element.value != null) {
@@ -53,16 +49,20 @@ class PreferenceMethods implements PreferenceInterface {
     return await fetchEntry();
   }
 
-  Future<PreferenceDTO?> fetchEntry() async {
+  Future<PreferenceDTO> fetchEntry() async {
     try {
       var dbClient = await DbInit.db;
       List<Map<String, dynamic>>? maps = await dbClient?.query(preferenceTable,
           columns: [preferenceId, viewType, theme, defaultSchool], where: '$preferenceId = $preferenceId');
-      return PreferenceDTO(
-          viewType: maps?[0][viewType], theme: maps?[0][theme], defaultSchool: maps?[0][defaultSchool]);
+
+      if (maps == null || maps.isEmpty) {
+        await addPreferences(PreferenceDTO());
+        return PreferenceDTO();
+      }
+      return PreferenceDTO(viewType: maps[0][viewType], theme: maps[0][theme], defaultSchool: maps[0][defaultSchool]);
     } catch (e) {
       log("Error in fetchEntry.", error: e);
-      return null;
+      return PreferenceDTO();
     }
   }
 
