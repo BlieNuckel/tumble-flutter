@@ -43,12 +43,15 @@ class ScheduleApi {
   /// Actual return type is [List<Object>], but all items are instances
   /// of either [Schedule] or [DayDivider]
   ///
-  static Future<List<Object>> getSchedule(String scheduleId, BuildContext context, bool padded) async {
+  static Future<List<Object>> getSchedule(String scheduleId, bool padded, {Function? showNotificationCB}) async {
     List eventList = [];
     if (await isFavorite(scheduleId)) {
       DateTime cacheTime = (await ScheduleRepository.getScheduleCachedTime(scheduleId))!;
       if (DateTime.now().difference(cacheTime).inMinutes > 10) {
-        saveCurrScheduleToDb(scheduleId);
+        saveCurrScheduleToDb(scheduleId).then((value) {
+          if (showNotificationCB == null) return;
+          showNotificationCB(true);
+        });
       }
       ScheduleDTO? data = await ScheduleRepository.getScheduleEntry(scheduleId);
       /* If database returns empty schedule we toast */
@@ -66,8 +69,8 @@ class ScheduleApi {
     return padded ? paddedScheduleFromSnapshot(eventList) : scheduleFromSnapshot(eventList);
   }
 
-  static Future<List<Week>> getWeekSplitSchedule(String scheduleId, BuildContext context) async {
-    final List<Object> paddedList = await getSchedule(scheduleId, context, true);
+  static Future<List<Week>> getWeekSplitSchedule(String scheduleId, {Function? showNotificationCB}) async {
+    final List<Object> paddedList = await getSchedule(scheduleId, true);
     List<Week> parsedWeekList = [];
 
     int startOfWeek = 0;

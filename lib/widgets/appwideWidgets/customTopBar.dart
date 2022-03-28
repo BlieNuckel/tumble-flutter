@@ -111,7 +111,6 @@ class _FavoriteButtonState extends State<FavoriteButton> {
     return Material(
         color: Colors.transparent,
         child: FutureBuilder(
-          key: const Key("permanent"),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return IconButton(
@@ -133,9 +132,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                       _favorited ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onBackground);
             }
 
-            return Container(
-              color: Theme.of(context).colorScheme.background,
-            );
+            return Container();
           }),
           future: _future,
         ));

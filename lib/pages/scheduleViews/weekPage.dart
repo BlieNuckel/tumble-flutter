@@ -20,6 +20,13 @@ class _WeekPageState extends State<WeekPage> {
   // late List<Object> _schedules_for_db;
   late List<Week> _schedules;
   bool _isLoading = true;
+  bool _showScheduleUpdateNot = false;
+
+  void showScheduleUpdateNotCB() {
+    setState(() {
+      _showScheduleUpdateNot = true;
+    });
+  }
 
   @override
   void initState() {
@@ -30,8 +37,8 @@ class _WeekPageState extends State<WeekPage> {
 
   Future<void> getSchedules() async {
     // .getSchedule returns a list of DayDivider and Schedule objects
-    _schedules = await ScheduleApi.getWeekSplitSchedule(
-        widget.currentScheduleId, context);
+    _schedules =
+        await ScheduleApi.getWeekSplitSchedule(widget.currentScheduleId, showNotificationCB: showScheduleUpdateNotCB);
     setState(() {
       _isLoading = false;
     });
