@@ -1,17 +1,20 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:tumble/models/schedule.dart';
-import 'package:tumble/models/schedule_dto.dart';
+import 'package:tumble/pages/utilViews/search_settings_page.dart';
 import 'package:tumble/providers/scheduleAPI.dart';
 import 'package:tumble/resources/database/repository/scheduleRepository.dart';
 import 'package:tumble/pages/selectorViews/search.dart';
 import 'package:tumble/pages/utilViews/settingsPage.dart';
 
 class CustomTopBar extends StatefulWidget {
-  final String currentScheduleId;
+  final String? currentScheduleId;
+  final bool showSearchButton;
+  final bool searchMenuSettings;
 
-  const CustomTopBar({Key? key, required this.currentScheduleId})
+  const CustomTopBar(
+      {Key? key,
+      this.currentScheduleId,
+      this.showSearchButton = true,
+      this.searchMenuSettings = false})
       : super(key: key);
 
   @override
@@ -34,30 +37,32 @@ class CustomTopBarState extends State<CustomTopBar> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                () {
+                  if (widget.currentScheduleId == null) return Container();
+                  return FavoriteButton(
+                      currentScheduleId: widget.currentScheduleId!);
+                }(),
                 Row(
                   children: [
-                    FavoriteButton(
-                      currentScheduleId: widget.currentScheduleId,
-                    )
-                  ],
-                ),
-                Row(
-                  children: [
-                    Material(
-                        color: Colors.transparent,
-                        child: IconButton(
-                            icon: const Icon(Icons.search),
-                            iconSize: 32,
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ScheduleSearchPage()));
-                            },
-                            splashRadius: 20,
-                            enableFeedback: true,
-                            color: Theme.of(context).colorScheme.onBackground)),
+                    () {
+                      if (!widget.showSearchButton) return Container();
+                      return Material(
+                          color: Colors.transparent,
+                          child: IconButton(
+                              icon: const Icon(Icons.search),
+                              iconSize: 32,
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ScheduleSearchPage()));
+                              },
+                              splashRadius: 20,
+                              enableFeedback: true,
+                              color:
+                                  Theme.of(context).colorScheme.onBackground));
+                    }(),
                     Material(
                         color: Colors.transparent,
                         child: IconButton(
@@ -67,10 +72,13 @@ class CustomTopBarState extends State<CustomTopBar> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: ((context) => SettingsPage(
-                                            currentScheduleId:
-                                                widget.currentScheduleId,
-                                          ))));
+                                      builder: ((context) =>
+                                          widget.searchMenuSettings
+                                              ? SearchSettingsPage()
+                                              : SettingsPage(
+                                                  currentScheduleId:
+                                                      widget.currentScheduleId!,
+                                                ))));
                             },
                             splashRadius: 20,
                             enableFeedback: true,

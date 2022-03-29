@@ -4,7 +4,6 @@ import 'package:tumble/pages/scheduleViews/home.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
 import 'package:tumble/pages/selectorViews/schoolSelectionPage.dart';
 import 'package:tumble/providers/theme_provider.dart';
-import 'package:tumble/resources/database/repository/preferenceRepository.dart';
 import 'package:tumble/service_locator.dart';
 import 'package:tumble/widgets/settingsWidgets/settingsSection.dart';
 import 'package:tumble/widgets/settingsWidgets/button_tile.dart';

@@ -24,28 +24,31 @@ class ButtonSettingsTile extends StatelessWidget {
               width: 50,
               child: Icon(prefixIcon),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    fontSize: 18,
+            Padding(
+              padding: const EdgeInsets.only(left: 18),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      fontSize: 18,
+                    ),
                   ),
-                ),
-                Text(
-                  subtitle,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    fontWeight: FontWeight.w200,
-                  ),
-                )
-              ],
-            )
+                  Text(
+                    subtitle,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      fontWeight: FontWeight.w200,
+                    ),
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),
