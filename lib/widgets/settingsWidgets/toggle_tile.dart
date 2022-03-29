@@ -24,35 +24,29 @@ class _ToggleSettingsTileState extends State<ToggleSettingsTile> {
       height: 60,
       child: Row(
         children: [
-          SizedBox(
-            width: 50,
-            child: Icon(widget.prefixIcon),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.title,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onBackground,
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
           Expanded(
             child: Align(
               alignment: Alignment.centerRight,
-              child: Switch(
-                  value: _toggleValue,
-                  onChanged: (value) {
-                    widget.onToggle(value);
-                    setState(() {
-                      _toggleValue = !_toggleValue;
-                    });
-                  }),
+              child: SwitchListTile(
+                title: Text(
+                  "Dark Mode",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onBackground,
+                    fontSize: 18,
+                  ),
+                ),
+                value: _toggleValue,
+                onChanged: (value) {
+                  widget.onToggle(value);
+                  setState(() {
+                    _toggleValue = !_toggleValue;
+                  });
+                },
+                secondary: Icon(widget.prefixIcon),
+                visualDensity: VisualDensity.compact,
+                activeColor: Theme.of(context).colorScheme.primaryContainer,
+                activeTrackColor: Theme.of(context).colorScheme.primary,
+              ),
             ),
           )
         ],

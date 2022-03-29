@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tumble/models/user_preference_dto.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
 import 'package:tumble/pages/selectorViews/schoolSelectionPage.dart';
 import 'package:tumble/providers/theme_provider.dart';
@@ -10,8 +9,8 @@ import 'package:tumble/widgets/settingsWidgets/toggle_tile.dart';
 
 import '../../util/school_enum.dart';
 
-class SettingsPage extends StatelessWidget {
-  SettingsPage({Key? key}) : super(key: key);
+class SearchSettingsPage extends StatelessWidget {
+  SearchSettingsPage({Key? key}) : super(key: key);
   late SchoolEnum _defaultSchool;
 
   Future<SchoolEnum> setupAsnycVars() async {
