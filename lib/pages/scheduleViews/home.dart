@@ -7,7 +7,6 @@ import '../../service_locator.dart';
 
 class HomePage extends StatefulWidget {
   final String currentScheduleId;
-
   const HomePage({Key? key, required this.currentScheduleId}) : super(key: key);
 
   @override

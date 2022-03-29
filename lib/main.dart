@@ -64,7 +64,9 @@ class MyApp extends StatelessWidget {
                 value: SystemUiOverlayStyle(
                     statusBarColor: Colors.transparent,
                     statusBarIconBrightness:
-                        theme.isDarkMode ? Brightness.light : Brightness.dark),
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Brightness.light
+                            : Brightness.dark),
                 child: FutureBuilder(
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return Container();

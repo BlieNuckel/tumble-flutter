@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tumble/models/user_preference_dto.dart';
+import 'package:tumble/pages/scheduleViews/home.dart';
 import 'package:tumble/providers/schoolSelectorProvider.dart';
 import 'package:tumble/pages/selectorViews/schoolSelectionPage.dart';
 import 'package:tumble/providers/theme_provider.dart';
@@ -13,9 +14,11 @@ import 'package:tumble/widgets/settingsWidgets/toggle_tile.dart';
 import '../../util/school_enum.dart';
 
 class SettingsPage extends StatelessWidget {
-  SettingsPage({Key? key}) : super(key: key);
+  SettingsPage({Key? key, required this.currentScheduleId}) : super(key: key);
   final SchoolEnum _defaultSchool =
       (SchoolSelectorProvider.getDefaultSchool())!;
+
+  final String currentScheduleId;
 
   @override
   Widget build(BuildContext context) {
@@ -63,13 +66,25 @@ class SettingsPage extends StatelessWidget {
                           ListTile(
                               leading: const Icon(Icons.view_day_rounded),
                               title: const Text('Default view'),
-                              onTap: () => locator<PreferenceDTO>().viewType =
-                                  'default'),
+                              onTap: () {
+                                locator<PreferenceDTO>().viewType = 'default';
+                                Navigator.of(context)
+                                    .pushReplacement(MaterialPageRoute(
+                                  builder: (context) => HomePage(
+                                      currentScheduleId: currentScheduleId),
+                                ));
+                              }),
                           ListTile(
                               leading: const Icon(Icons.view_week_rounded),
                               title: const Text('Week view'),
-                              onTap: () =>
-                                  locator<PreferenceDTO>().viewType = 'week')
+                              onTap: () {
+                                locator<PreferenceDTO>().viewType = 'week';
+                                Navigator.of(context)
+                                    .pushReplacement(MaterialPageRoute(
+                                  builder: (context) => HomePage(
+                                      currentScheduleId: currentScheduleId),
+                                ));
+                              }),
                         ],
                       );
                     }))

@@ -5,6 +5,9 @@ import 'package:tumble/widgets/appwideWidgets/customTopBar.dart';
 import 'package:tumble/widgets/appwideWidgets/loadingCircle.dart';
 import 'package:tumble/widgets/weekViewWidgets/weekWidget.dart';
 
+import '../../widgets/appwideWidgets/schedule_refresh_notification.dart';
+import 'home.dart';
+
 class WeekPage extends StatefulWidget {
   final String currentScheduleId;
 
@@ -22,9 +25,9 @@ class _WeekPageState extends State<WeekPage> {
   bool _isLoading = true;
   bool _showScheduleUpdateNot = false;
 
-  void showScheduleUpdateNotCB() {
+  void showScheduleUpdateNotCB(bool value) {
     setState(() {
-      _showScheduleUpdateNot = true;
+      _showScheduleUpdateNot = value;
     });
   }
 
@@ -37,8 +40,9 @@ class _WeekPageState extends State<WeekPage> {
 
   Future<void> getSchedules() async {
     // .getSchedule returns a list of DayDivider and Schedule objects
-    _schedules =
-        await ScheduleApi.getWeekSplitSchedule(widget.currentScheduleId, showNotificationCB: showScheduleUpdateNotCB);
+    _schedules = await ScheduleApi.getWeekSplitSchedule(
+        widget.currentScheduleId,
+        showNotificationCB: showScheduleUpdateNotCB);
     setState(() {
       _isLoading = false;
     });
@@ -67,7 +71,26 @@ class _WeekPageState extends State<WeekPage> {
               CustomTopBar(
                 key: _keyTopBar,
                 currentScheduleId: widget.currentScheduleId,
-              )
+              ),
+              AnimatedPositioned(
+                top: _showScheduleUpdateNot ? 0 : -70,
+                left: 0,
+                right: 0,
+                height: 70,
+                child: ScheduleRefreshNotification(
+                  showScheduleUpdateNotCB: showScheduleUpdateNotCB,
+                  onClick: () {
+                    showScheduleUpdateNotCB(false);
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(
+                              currentScheduleId: widget.currentScheduleId),
+                        ));
+                  },
+                ),
+                duration: const Duration(milliseconds: 200),
+              ),
             ];
           }
         }(),

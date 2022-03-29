@@ -76,7 +76,7 @@ class WeekWidget extends StatelessWidget {
           ),
           Positioned(
             right: 20,
-            top: 80,
+            top: MediaQuery.of(context).viewPadding.top + 50,
             child: Text(
               "w. " + week.weekNumber,
               style: TextStyle(
