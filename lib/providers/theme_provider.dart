@@ -7,7 +7,9 @@ class ThemeProvider with ChangeNotifier {
 
   static Future<ThemeProvider> init() async {
     PreferenceDTO preferences = (await PreferenceRepository.getPreferences())!;
-    return preferences.theme == "dark" ? ThemeProvider(ThemeMode.dark) : ThemeProvider(ThemeMode.system);
+    return preferences.theme == "dark"
+        ? ThemeProvider(ThemeMode.dark)
+        : ThemeProvider(ThemeMode.system);
   }
 
   ThemeMode themeMode;
@@ -17,7 +19,8 @@ class ThemeProvider with ChangeNotifier {
   bool get isDarkMode => themeMode == ThemeMode.dark;
 
   void toggleTheme(bool isOn) async {
-    await PreferenceRepository.updatePreferences(isOn ? PreferenceDTO(theme: "dark") : PreferenceDTO(theme: "null"));
+    await PreferenceRepository.updatePreferences(
+        isOn ? PreferenceDTO(theme: "dark") : PreferenceDTO(theme: "null"));
     PreferenceDTO preferences = (await PreferenceRepository.getPreferences())!;
     themeMode = preferences.theme == "dark" ? ThemeMode.dark : ThemeMode.system;
 
