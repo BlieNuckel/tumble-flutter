@@ -10,7 +10,7 @@ class PreferenceRepository {
   static deletePreferences(String preferenceEntry) =>
       dbObject.deletePreferences(preferenceEntry);
 
-  static Future<PreferenceDTO?> getPreferences() => dbObject.getPreferences();
+  static Future<PreferenceDTO> getPreferences() => dbObject.getPreferences();
 
   static updatePreferences(PreferenceDTO newPreferenceDTO) =>
       dbObject.updatePreferences(newPreferenceDTO);

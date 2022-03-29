@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tumble/models/user_preference_dto.dart';
 import 'package:tumble/pages/scheduleViews/schedulePage.dart';
 import 'package:tumble/pages/scheduleViews/weekPage.dart';
+
+import '../../service_locator.dart';
 
 class HomePage extends StatefulWidget {
   final String currentScheduleId;
@@ -25,10 +28,12 @@ class _MainPageState extends State<HomePage> {
       currentScheduleId: widget.currentScheduleId,
     );
     _weekPage = WeekPage(currentScheduleId: widget.currentScheduleId);
+    Map<String, int> _pagesMap = {'default': 0, 'week': 1};
 
     _pages = [_schedulePage, _weekPage];
-    _currentIndex = 0;
-    _currentPage = _schedulePage;
+
+    _currentIndex = _pagesMap[locator<PreferenceDTO>().viewType]!;
+    _currentPage = _pages[_pagesMap[locator<PreferenceDTO>().viewType]!];
 
     super.initState();
   }
@@ -52,8 +57,10 @@ class _MainPageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 40,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_view_day_rounded), label: "Schedule"),
-          BottomNavigationBarItem(icon: Icon(Icons.view_week_rounded), label: "Week"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_view_day_rounded), label: "Schedule"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.view_week_rounded), label: "Week"),
         ],
       ),
     );

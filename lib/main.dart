@@ -28,16 +28,11 @@ class MyApp extends StatelessWidget {
 
   late List<ScheduleDTO> _allFavoriteSchedules;
   late bool _hasFavorite;
-  late bool _schoolSelected;
+  final bool _schoolSelected = SchoolSelectorProvider.schoolSelected();
 
   Future<List<ScheduleDTO>> setupAllSchedules() async {
     _allFavoriteSchedules = (await ScheduleRepository.getAllScheduleEntries())!;
     return _allFavoriteSchedules;
-  }
-
-  Future<bool> setupShoolSelected() async {
-    _schoolSelected = await SchoolSelectorProvider.schoolSelected();
-    return _schoolSelected;
   }
 
   Future<bool> setupHasFavorite() async {
@@ -68,14 +63,16 @@ class MyApp extends StatelessWidget {
               home: AnnotatedRegion<SystemUiOverlayStyle>(
                 value: SystemUiOverlayStyle(
                     statusBarColor: Colors.transparent,
-                    statusBarIconBrightness: theme.isDarkMode ? Brightness.light : Brightness.dark),
+                    statusBarIconBrightness:
+                        theme.isDarkMode ? Brightness.light : Brightness.dark),
                 child: FutureBuilder(
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return Container();
                     if (_schoolSelected) {
                       if (_hasFavorite) {
                         return HomePage(
-                          currentScheduleId: _allFavoriteSchedules[0].scheduleId,
+                          currentScheduleId:
+                              _allFavoriteSchedules[0].scheduleId,
                         );
                       }
                       return const ScheduleSearchPage();
@@ -85,7 +82,6 @@ class MyApp extends StatelessWidget {
                   future: Future.wait([
                     setupAllSchedules(),
                     setupHasFavorite(),
-                    setupShoolSelected(),
                   ]),
                 ),
               ),

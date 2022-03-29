@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:tumble/models/user_preference_dto.dart';
 import 'package:tumble/resources/database/interface/preferenceInterface.dart';
+import '../../../util/school_enum.dart';
 import 'db_init.dart';
 
 class PreferenceMethods implements PreferenceInterface {
@@ -18,6 +19,7 @@ class PreferenceMethods implements PreferenceInterface {
 
   @override
   updatePreferences(PreferenceDTO newPreferenceDTO) async {
+    print(newPreferenceDTO.toMap().toString());
     Map<String, dynamic> oldPreferencesMap = (await fetchEntry()).toMap();
     Map? newPreferencesMap = newPreferenceDTO.toMap();
     for (MapEntry element in newPreferencesMap.entries) {
@@ -45,7 +47,7 @@ class PreferenceMethods implements PreferenceInterface {
   }
 
   @override
-  Future<PreferenceDTO?> getPreferences() async {
+  Future<PreferenceDTO> getPreferences() async {
     return await fetchEntry();
   }
 
@@ -53,13 +55,22 @@ class PreferenceMethods implements PreferenceInterface {
     try {
       var dbClient = await DbInit.db;
       List<Map<String, dynamic>>? maps = await dbClient?.query(preferenceTable,
-          columns: [preferenceId, viewType, theme, defaultSchool], where: '$preferenceId = $preferenceId');
+          columns: [preferenceId, viewType, theme, defaultSchool],
+          where: '$preferenceId = $preferenceId');
 
       if (maps == null || maps.isEmpty) {
         await addPreferences(PreferenceDTO());
         return PreferenceDTO();
       }
-      return PreferenceDTO(viewType: maps[0][viewType], theme: maps[0][theme], defaultSchool: maps[0][defaultSchool]);
+
+      String? tempDefaultSchool = maps[0][defaultSchool];
+
+      return PreferenceDTO(
+          preferenceViewType: maps[0][viewType],
+          preferenceTheme: maps[0][theme],
+          preferenceDefaultSchool: tempDefaultSchool != null
+              ? SchoolEnum.values.byName(tempDefaultSchool)
+              : null);
     } catch (e) {
       log("Error in fetchEntry.", error: e);
       return PreferenceDTO();

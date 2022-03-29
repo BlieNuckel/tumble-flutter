@@ -4,6 +4,8 @@ import 'package:tumble/resources/database/repository/preferenceRepository.dart';
 import 'package:tumble/resources/database/repository/scheduleRepository.dart';
 import 'package:tumble/util/school_enum.dart';
 
+import '../service_locator.dart';
+
 class SchoolSelectorProvider {
   static final schools = [
     School(
@@ -53,27 +55,24 @@ class SchoolSelectorProvider {
     ),
   ];
 
-  static Future<bool> schoolSelected() async {
+  static bool schoolSelected() {
     // Read preference default school
-    return await getDefaultSchool() != null;
+    return getDefaultSchool() != null;
   }
 
-  static void setDefaultSchool(SchoolEnum school) async {
+  static void setDefaultSchool(SchoolEnum school) {
     // Set preference default school
-    if (await getDefaultSchool() != null && school != await getDefaultSchool()) {
+    if (getDefaultSchool() != null && school != getDefaultSchool()) {
       ScheduleRepository.deleteAllSchedules();
     }
-    PreferenceRepository.updatePreferences(PreferenceDTO(defaultSchool: school.name));
+    locator<PreferenceDTO>().defaultSchool = school;
   }
 
-  static Future<SchoolEnum?> getDefaultSchool() async {
-    PreferenceDTO? preferenceDTO = await PreferenceRepository.getPreferences();
-    String? defaultSchool = preferenceDTO?.defaultSchool;
-
-    if (defaultSchool == "" || defaultSchool == "null" || defaultSchool == null) {
+  static SchoolEnum? getDefaultSchool() {
+    SchoolEnum? defaultSchool = locator<PreferenceDTO>().defaultSchool;
+    if (defaultSchool == null) {
       return null;
     }
-
-    return SchoolEnum.values.byName(defaultSchool);
+    return defaultSchool;
   }
 }
