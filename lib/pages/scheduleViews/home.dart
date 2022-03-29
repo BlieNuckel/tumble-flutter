@@ -27,7 +27,7 @@ class _MainPageState extends State<HomePage> {
       currentScheduleId: widget.currentScheduleId,
     );
     _weekPage = WeekPage(currentScheduleId: widget.currentScheduleId);
-    Map<String, int> _pagesMap = {'default': 0, 'week': 1};
+    Map<String, int> _pagesMap = {'schedule': 0, 'week': 1};
 
     _pages = [_schedulePage, _weekPage];
 
@@ -56,10 +56,8 @@ class _MainPageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 40,
         items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_view_day_rounded), label: "Schedule"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.view_week_rounded), label: "Week"),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_view_day_rounded), label: "Schedule"),
+          BottomNavigationBarItem(icon: Icon(Icons.view_week_rounded), label: "Week"),
         ],
       ),
     );

@@ -14,8 +14,7 @@ import '../../util/school_enum.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({Key? key, required this.currentScheduleId}) : super(key: key);
-  final SchoolEnum _defaultSchool =
-      (SchoolSelectorProvider.getDefaultSchool())!;
+  final SchoolEnum _defaultSchool = (SchoolSelectorProvider.getDefaultSchool())!;
 
   final String currentScheduleId;
 
@@ -33,10 +32,7 @@ class SettingsPage extends StatelessWidget {
           SettingsSection(title: "Common", tiles: [
             ButtonSettingsTile(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: ((context) => SchoolSelectionPage())));
+                Navigator.push(context, MaterialPageRoute(builder: ((context) => SchoolSelectionPage())));
               },
               title: "Change school",
               subtitle: "Current school is " + _defaultSchool.name,
@@ -66,11 +62,9 @@ class SettingsPage extends StatelessWidget {
                               leading: const Icon(Icons.view_day_rounded),
                               title: const Text('Default view'),
                               onTap: () {
-                                locator<PreferenceDTO>().viewType = 'default';
-                                Navigator.of(context)
-                                    .pushReplacement(MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                      currentScheduleId: currentScheduleId),
+                                locator<PreferenceDTO>().viewType = 'schedule';
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                  builder: (context) => HomePage(currentScheduleId: currentScheduleId),
                                 ));
                               }),
                           ListTile(
@@ -78,10 +72,8 @@ class SettingsPage extends StatelessWidget {
                               title: const Text('Week view'),
                               onTap: () {
                                 locator<PreferenceDTO>().viewType = 'week';
-                                Navigator.of(context)
-                                    .pushReplacement(MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                      currentScheduleId: currentScheduleId),
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                  builder: (context) => HomePage(currentScheduleId: currentScheduleId),
                                 ));
                               }),
                         ],
